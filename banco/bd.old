@@ -1,0 +1,64 @@
+-- ADM
+CREATE TABLE ADM (
+    id INT(11) PRIMARY KEY,
+    user VARCHAR(50),
+    pass VARCHAR(50)
+);
+
+-- VENDEDOR
+CREATE TABLE VENDEDOR (
+    id INT(11) PRIMARY KEY,
+    id_endereco INT(11),
+    nome VARCHAR(100),
+    email VARCHAR(100),
+    senha CHAR(32),
+    status INT(11)
+);
+
+-- ENDERECO
+CREATE TABLE ENDERECO (
+    id INT(11) PRIMARY KEY,
+    pais VARCHAR(50),
+    estado VARCHAR(50),
+    cidade VARCHAR(50),
+    rua VARCHAR(50),
+    bairro VARCHAR(50),
+    numero INT(11),
+    complemento VARCHAR(100)
+);
+
+-- PRODUTOS
+CREATE TABLE PRODUTOS (
+    id INT(11) PRIMARY KEY,
+    nome VARCHAR(100),
+    descricao VARCHAR(1000),
+    valor VARCHAR(50),
+    foto VARCHAR(100)
+);
+
+-- CLIENTE
+CREATE TABLE CLIENTE (
+    id INT(11) PRIMARY KEY,
+    id_endereco INT(11),
+    nome VARCHAR(100),
+    email VARCHAR(200),
+    senha CHAR(32)
+);
+
+-- CARRINHO
+CREATE TABLE CARRINHO (
+    id INT(11) PRIMARY KEY,
+    id_cliente INT(11),
+    id_produto INT(11),
+    valor_carrinho VARCHAR(50)
+);
+
+-- AVALIACOES
+CREATE TABLE AVALIACOES (
+    id INT(11) PRIMARY KEY,
+    nota INT(3),
+    nome VARCHAR(100),
+    email VARCHAR(150),
+    texto VARCHAR(1000),
+    hora VARCHAR(50)
+);

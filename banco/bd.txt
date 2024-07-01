@@ -1,0 +1,71 @@
+/* brModelo: */
+
+CREATE TABLE ADM (
+    id int (11) PRIMARY KEY,
+    user varchar (50),
+    pass varchar (50)
+);
+
+/* brModelo: */
+
+CREATE TABLE VENDEDOR (
+    id int (11) PRIMARY KEY,
+    id_endereco int (11),
+    nome varchar (100),
+    email varchar (100),
+    senha char (32),
+    status int (11)
+);
+
+/* brModelo: */
+
+CREATE TABLE ENDERECO (
+    id int (11) PRIMARY KEY,
+    pais varchar (50),
+    estado varchar (50),
+    cidade varchar (50),
+    rua varchar (50),
+    bairro varchar (50),
+    numero int (11),
+    complemento varchar (100)
+);
+
+/* brModelo: */
+
+CREATE TABLE PRODUTOS (
+    id int (11) PRIMARY KEY,
+    nome varchar (100),
+    descricao varchar (1000),
+    valor varchar (50),
+    foto varchar (100)
+);
+
+/* brModelo: */
+
+CREATE TABLE CLIENTE (
+    id int (11) PRIMARY KEY,
+    id_endereco int (11),
+    nome varchar (100),
+    email varchar (200),
+    senha char (32)
+);
+
+/* brModelo: */
+
+CREATE TABLE CARRINHO (
+    id int (11) PRIMARY KEY,
+    id_cliente int (11),
+    id_produto int (11),
+    valor_carrinho varchar (50)
+);
+
+/* brModelo: */
+
+CREATE TABLE AVALIACOES (
+    id int (11) PRIMARY KEY,
+    nota int (3),
+    nome varchar (100),
+    email varchar (150),
+    text varchar (1000),
+    time varchar (50)
+);

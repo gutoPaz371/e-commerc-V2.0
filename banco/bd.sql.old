@@ -1,0 +1,32 @@
+-- Criar o banco de dados
+CREATE DATABASE IF NOT EXISTS loja_de_roupas;
+
+-- Usar o banco de dados recém-criado
+USE loja_de_roupas;
+
+-- Tabela de Produtos
+CREATE TABLE Produtos (
+    id_produto INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    categoria VARCHAR(100),
+    preco DECIMAL(10, 2) NOT NULL,
+    quantidade_em_estoque INT NOT NULL
+);
+
+-- Tabela de Clientes
+CREATE TABLE Clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    sobrenome VARCHAR(100) NOT NULL,
+    email VARCHAR(255),
+    telefone VARCHAR(20)
+);
+
+-- Tabela de Vendas
+CREATE TABLE Vendas (
+    id_venda INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT,
+    data_venda DATE,
+    total_venda DECIMAL(10, 2),
+    FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente)
+);
