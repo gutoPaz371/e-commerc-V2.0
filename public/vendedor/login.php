@@ -1,3 +1,17 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  require_once "../../config/Database.php";
+  require_once "../../config/Crud.php";
+  $data = new Database();
+  $db = $data->getConnection();
+  $vend = new Vendedor($db);
+  $vend->email=$_POST['email'];
+  $vend->senha=$_POST['senha'];
+  if($id=$vend->fazerLogin()){
+    echo "fazer login";
+  }
+}
+?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en-US" dir="ltr">
 
@@ -79,12 +93,12 @@
                     <h5>Area Vendas</h5>
                   </div>
                 </div>
-                <form>
+                <form action="#" method="post">
                   <div class="mb-3">
-                    <input class="form-control" type="email" placeholder="Email" />
+                    <input name="email" class="form-control" type="email" placeholder="Email" />
                   </div>
                   <div class="mb-3">
-                    <input class="form-control" type="password" placeholder="Password" />
+                    <input name="senha" class="form-control" type="password" placeholder="Password" />
                   </div>
                   <div class="row flex-between-center">
                     <div class="col-auto">
