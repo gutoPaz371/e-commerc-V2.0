@@ -1,51 +1,5 @@
 <?php
-  require_once "../../config/Database.php";
-  require_once "../../config/Crud.php";
-  require "./Session.php";
-  $data = new Database();
-  $db = $data->getConnection();
-  $vend = new Vendedor($db);
-  $res = $vend->SelectAll();
-  function status($st,$id){
-    switch ($st){
-      case 0:
-        return "<span class='badge bg-danger' id='$id st_row'>Desativado</span>";
-        break;
-      case 1:
-        return "<span class='badge bg-success' id='$id st_row'>Ativo</span>";
-        break;        
-    }
-  }
-  if($_SERVER['REQUEST_METHOD']=="POST"){
-    //INSERT VENDEDOR
-    if(isset($_POST['insert_vendedor']) && $_POST['insert_vendedor']==1)(function(){
-      global $vend;
-      $vend->nome=$_POST['nome'];
-      $vend->senha=$_POST['pass'];
-      $vend->email=$_POST['email'];
-      $vend->st=$_POST['st'];
-      if($vend->insert())header("location:./vendedores.php");return false;
-    })();
-    //UPDATE VENDEDOR
-    if(isset($_POST['updateVendedor']) && $_POST['updateVendedor']==1)(function(){
-      global $vend;
-      $vend->id=$_POST['id'];
-      $vend->nome=$_POST['nome'];
-      $vend->email=$_POST['email'];
-      $vend->st=$_POST['st'];
-      if(isset($_POST['restPass'])){
-        $vend->senha=password_hash("37120011",PASSWORD_DEFAULT);
-      }
-      if($vend->update())header("location: vendedores.php");
-    })();
-    //DELETAR VENDEDOR
-    if(isset($_POST['deleteVendedor']) && $_POST['deleteVendedor']==1)(function(){
-      global $vend;
-      $vend->id=$_POST['id_del'];echo "del";
-      if($vend->delete())header("location: vendedores.php");
-    })();
-  }
-
+  //if()
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en-US" dir="ltr">
@@ -79,7 +33,9 @@
     <!-- ===============================================-->
     <!--    Stylesheets-->
     <!-- ===============================================-->
-    <link href="../vendors/prism/prism-okaidia.css" rel="stylesheet">
+    <link href="../vendors/choices/choices.min.css" rel="stylesheet">
+    <link href="../vendors/flatpickr/flatpickr.min.css" rel="stylesheet">
+    <link href="../vendors/dropzone/dropzone.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700%7cPoppins:300,400,500,600,700,800,900&amp;display=swap" rel="stylesheet">
     <link href="../vendors/simplebar/simplebar.min.css" rel="stylesheet">
@@ -120,11 +76,11 @@
             container.classList.add('container-fluid');
           }
         </script>
-       
+        
         <div class="content">
           <nav class="navbar navbar-light navbar-glass navbar-top navbar-expand">
 
-            <button class="btn navbar-toggler-humburger-icon navbar-toggler me-1 me-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
+            <div class="btn navbar-toggler-humburger-icon navbar-toggler me-1 me-sm-3" type="div" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></div>
             <a class="navbar-brand me-1 me-sm-3" href="../index.html">
               <div class="d-flex align-items-center"><img class="me-2" src="../assets/img/icons/spot-illustrations/falcon.png" alt="" width="40" /><span class="font-sans-serif text-primary">falcon</span>
               </div>
@@ -132,13 +88,13 @@
             <ul class="navbar-nav align-items-center d-none d-lg-block">
               <li class="nav-item">
                 <div class="search-box" data-list='{"valueNames":["title"]}'>
-                  <form class="position-relative" data-bs-toggle="search" data-bs-display="static">
+                  <div class="position-relative" data-bs-toggle="search" data-bs-display="static">
                     <input class="form-control search-input fuzzy-search" type="search" placeholder="Search..." aria-label="Search" />
                     <span class="fas fa-search search-box-icon"></span>
 
-                  </form>
+                  </div>
                   <div class="btn-close-falcon-container position-absolute end-0 top-50 translate-middle shadow-none" data-bs-dismiss="search">
-                    <button class="btn btn-link btn-close-falcon p-0" aria-label="Close"></button>
+                    <div class="btn btn-link btn-close-falcon p-0" aria-label="Close"></div>
                   </div>
                   <div class="dropdown-menu border font-base start-0 mt-2 py-0 overflow-hidden w-100">
                     <div class="scrollbar list py-3" style="max-height: 24rem;">
@@ -242,12 +198,12 @@
             </ul>
             <ul class="navbar-nav navbar-nav-icons ms-auto flex-row align-items-center">
               <li class="nav-item ps-2 pe-0">
-                <div class="dropdown theme-control-dropdown"><a class="nav-link d-flex align-items-center dropdown-toggle fa-icon-wait fs-9 pe-1 py-0" href="#" role="button" id="themeSwitchDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-sun fs-7" data-fa-transform="shrink-2" data-theme-dropdown-toggle-icon="light"></span><span class="fas fa-moon fs-7" data-fa-transform="shrink-3" data-theme-dropdown-toggle-icon="dark"></span><span class="fas fa-adjust fs-7" data-fa-transform="shrink-2" data-theme-dropdown-toggle-icon="auto"></span></a>
+                <div class="dropdown theme-control-dropdown"><a class="nav-link d-flex align-items-center dropdown-toggle fa-icon-wait fs-9 pe-1 py-0" href="#" role="div" id="themeSwitchDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-sun fs-7" data-fa-transform="shrink-2" data-theme-dropdown-toggle-icon="light"></span><span class="fas fa-moon fs-7" data-fa-transform="shrink-3" data-theme-dropdown-toggle-icon="dark"></span><span class="fas fa-adjust fs-7" data-fa-transform="shrink-2" data-theme-dropdown-toggle-icon="auto"></span></a>
                   <div class="dropdown-menu dropdown-menu-end dropdown-caret border py-0 mt-3" aria-labelledby="themeSwitchDropdown">
                     <div class="bg-white dark__bg-1000 rounded-2 py-2">
-                      <button class="dropdown-item d-flex align-items-center gap-2" type="button" value="light" data-theme-control="theme"><span class="fas fa-sun"></span>Light<span class="fas fa-check dropdown-check-icon ms-auto text-600"></span></button>
-                      <button class="dropdown-item d-flex align-items-center gap-2" type="button" value="dark" data-theme-control="theme"><span class="fas fa-moon" data-fa-transform=""></span>Dark<span class="fas fa-check dropdown-check-icon ms-auto text-600"></span></button>
-                      <button class="dropdown-item d-flex align-items-center gap-2" type="button" value="auto" data-theme-control="theme"><span class="fas fa-adjust" data-fa-transform=""></span>Auto<span class="fas fa-check dropdown-check-icon ms-auto text-600"></span></button>
+                      <div class="dropdown-item d-flex align-items-center gap-2" type="div" value="light" data-theme-control="theme"><span class="fas fa-sun"></span>Light<span class="fas fa-check dropdown-check-icon ms-auto text-600"></span></div>
+                      <div class="dropdown-item d-flex align-items-center gap-2" type="div" value="dark" data-theme-control="theme"><span class="fas fa-moon" data-fa-transform=""></span>Dark<span class="fas fa-check dropdown-check-icon ms-auto text-600"></span></div>
+                      <div class="dropdown-item d-flex align-items-center gap-2" type="div" value="auto" data-theme-control="theme"><span class="fas fa-adjust" data-fa-transform=""></span>Auto<span class="fas fa-check dropdown-check-icon ms-auto text-600"></span></div>
                     </div>
                   </div>
                 </div>
@@ -257,7 +213,7 @@
 
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link notification-indicator notification-indicator-primary px-0 fa-icon-wait" id="navbarDropdownNotification" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-hide-on-body-scroll="data-hide-on-body-scroll"><span class="fas fa-bell" data-fa-transform="shrink-6" style="font-size: 33px;"></span></a>
+                <a class="nav-link notification-indicator notification-indicator-primary px-0 fa-icon-wait" id="navbarDropdownNotification" role="div" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-hide-on-body-scroll="data-hide-on-body-scroll"><span class="fas fa-bell" data-fa-transform="shrink-6" style="font-size: 33px;"></span></a>
                 <div class="dropdown-menu dropdown-caret dropdown-caret dropdown-menu-end dropdown-menu-card dropdown-menu-notification dropdown-caret-bg" aria-labelledby="navbarDropdownNotification">
                   <div class="card card-notification shadow-none">
                     <div class="card-header">
@@ -359,7 +315,7 @@
 
               </li>
               <li class="nav-item dropdown px-1">
-                <a class="nav-link fa-icon-wait nine-dots p-1" id="navbarDropdownMenu" role="button" data-hide-on-body-scroll="data-hide-on-body-scroll" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link fa-icon-wait nine-dots p-1" id="navbarDropdownMenu" role="div" data-hide-on-body-scroll="data-hide-on-body-scroll" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="43" viewBox="0 0 16 16" fill="none">
                     <circle cx="2" cy="2" r="2" fill="#6C6E71"></circle>
                     <circle cx="2" cy="8" r="2" fill="#6C6E71"></circle>
@@ -448,7 +404,7 @@
                 </div>
 
               </li>
-              <li class="nav-item dropdown"><a class="nav-link pe-0 ps-2" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <li class="nav-item dropdown"><a class="nav-link pe-0 ps-2" id="navbarDropdownUser" role="div" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <div class="avatar avatar-xl">
                     <img class="rounded-circle" src="../assets/img/team/3-thumb.png" alt="" />
 
@@ -465,206 +421,155 @@
 
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="../pages/user/settings.html">Settings</a>
-                    <a class="dropdown-item" href="./Sair.php">Logout</a>
+                    <a class="dropdown-item" href="../pages/authentication/card/logout.html">Logout</a>
                   </div>
                 </div>
               </li>
             </ul>
           </nav>
           <div class="card mb-3">
-            <div class="bg-holder d-none d-lg-block bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-4.png);">
-            </div>
-            <!--/.bg-holder-->
+            <div class="card-body">
+              <div class="row flex-between-center">
+                <div class="col-md">
+                  <h5 class="mb-2 mb-md-0">Adicionar Produto</h5>
+                </div>
+                <form action="#" method="post" enctype="multipart/form-data">
+                  
+                <div class="col-auto"><input value="1" name="post_addProduto">
+                  <a class="btn btn-link text-secondary p-0 me-3 fw-medium" role="div">Discartar</a>
+                  <button class="btn btn-primary" type="submit">Adicionar </button>
 
-          
-          </div>
-         
-          
-         
-          <div class="card mb-3">
-            <div class="card-header">
-              <div class="row flex-between-end">
-                <div class="col-auto align-self-center">
-                  <h5 class="mb-0" data-anchor="data-anchor">Vendedores</h5>                  
-                </div>
-                <div class="col-auto ms-auto">
-                  <button class="btn btn-info me-1 mb-1" type="button" data-bs-toggle="modal" data-bs-target="#add_vendedor"><span class="far fa-plus-square"></span></button>
-                </div>
-              </div>
-            </div>
-            <div class="card-body pt-0">
-              <div class="tab-content">
-                <div class="tab-pane preview-tab-pane active" role="tabpanel" aria-labelledby="tab-dom-981b9811-5fc8-4709-addd-8dc4435e54f0" id="dom-981b9811-5fc8-4709-addd-8dc4435e54f0">
-                  <div id="tableExample3" data-list='{"valueNames":["name","email","age"],"page":5,"pagination":true}'>
-                    <div class="row justify-content-end g-0">
-                      <div class="col-auto col-sm-5 mb-3">
-                        <form>
-                          <div class="input-group">
-                            <input class="form-control form-control-sm shadow-none search" type="search" placeholder="Search..." aria-label="search" />
-                            <div class="input-group-text bg-transparent"><span class="fa fa-search fs-10 text-600"></span></div>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                    <div class="table-responsive scrollbar">
-                      <table class="table table-bordered table-striped fs-10 mb-0">
-                        <thead class="bg-200">
-                          <tr>
-                            <th class="text-900 sort" data-sort="">Id</th>
-                            <th class="text-900 sort" data-sort="name">Nome</th>
-                            <th class="text-900 sort" data-sort="email">Email</th>
-                            <th class="text-900 sort" data-sort="">Status</th>
-                            <th class="text-900 sort" data-sort="age">Ação</th>
-                          </tr>
-                        </thead>
-                        <tbody class="list">
-                          <?php while($row = $res->fetch_array()){ ?>
-                            <tr>
-                              <td class="id" id="<?php echo $row['id']; ?>id_row"><?php echo $row['id']; ?></td>
-                              <td class="name" id="<?php echo $row['id']; ?>nome_row"><?php echo $row['nome']; ?></td>
-                              <td class="email" id="<?php echo $row['id']; ?>email_row"><?php echo $row['email']; ?></td>
-                              <td class=""><?php echo status($row['status'],$row['id']); ?></td>
-                              <td class="age" style="text-align: right;width: 50px;"><button onclick="sendDadosVendedor_for_modalEditVendedor('<?php echo $row['id']; ?>')" class="btn btn-info me-1 mb-1" type="button" data-bs-target="#edit_vendedor" data-bs-toggle="modal"><span class="fas fa-user-edit"></span></button></td>
-                            </tr>
-                          <?php } ?>
-                       
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="d-flex justify-content-center mt-3">
-                      <button class="btn btn-sm btn-falcon-default me-1" type="button" title="Previous" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
-                      <ul class="pagination mb-0"></ul>
-                      <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Next" data-list-pagination="next"><span class="fas fa-chevron-right"> </span></button>
-                    </div>
-                  </div>
-                </div>                
-              </div>
-            </div>
-          </div>
-                             
-          
-          <!-- MODAL ADICIONAR VENDEDOR  -->
-          <div class="modal fade" id="add_vendedor" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
-              <div class="modal-content position-relative">
-                <div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
-                  <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0">
-                  <div class="rounded-top-3 py-3 ps-4 pe-6 bg-body-tertiary">
-                    <h4 class="mb-1" id="modalExampleDemoLabel">Adicionar vendedor</h4>
-                  </div>
-                  <div class="p-4 pb-0">
-                    <form action="#" method="post"><input name="insert_vendedor" value="1" hidden>
-                      <div class="mb-3">
-                        <label class="col-form-label" for="">Nome:</label>
-                        <input name="nome" class="form-control" id="" type="text" required />
-                      </div>
-                      <div class="mb-3">
-                        <label class="col-form-label" for="message-text">Email:</label>
-                        <input name="email" class="form-control" type="email" id="message-text"></input>
-                      </div>
-                      <div class="mb-3">
-                        <label class="col-form-label" for="message-text">Senha:</label>
-                        <input name="pass" class="form-control" type="text" id="message-text" required>
-                      </div>
-                      <div class="mb-3">
-                        <label class="col-form-label" for="message-text">Status:</label>
-                        <select name="st" class="form-select" aria-label="Default select example">
-                          <option value="1">Ativado</option>
-                          <option value="0" selected>Desativado</option>
-                        </select>
-                      </div>                   
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <a class="btn btn-secondary" type="button" data-bs-dismiss="modal">Voltar</a>
-                  <button class="btn btn-success" type="submit">Cadastrar</button></form>
                 </div>
               </div>
             </div>
           </div>
-          <!-- MODAL ADICIONAR VENDEDOR FIM  -->
-          
-          
-          
-          
-          <!-- MODAL EDIT VENDEDOR -->
-                             <div class="modal fade" id="edit_vendedor" tabindex="-1" role="dialog" aria-hidden="true">
-                              <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
-                                <div class="modal-content position-relative">
-                                  <div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
-                                    <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
-                                  </div>
-                                  <div class="modal-body p-0">
-                                    <div class="rounded-top-3 py-3 ps-4 pe-6 bg-body-tertiary">
-                                      <h4 class="mb-1" id="modalExampleDemoLabel">Editar Vendedor </h4>
-                                    </div>
-                                    <div class="p-4 pb-0">
-                                      <form action="#" method="post">
-                                        <input type="text" id="recipient-id" name="id" hidden>
-                                        <input name="updateVendedor" value="1" hidden>
-                                        <div class="mb-3">
-                                          <label class="col-form-label" for="">Nome:</label>
-                                          <input name="nome" class="form-control" id="recipient-name" type="text" />
-                                        </div>
-                                        <div class="mb-3">
-                                          <label class="col-form-label" for="recipient-email">Email:</label>
-                                          <input name="email" class="form-control" id="recipient-email" type="text" />
-                                        </div>
-                                        <div class="mb-3">
-                                          <label class="col-form-label" for="">Conta:</label>
-                                            <select name="st" id="recipient-st" class="form-select" aria-label="Default select example">
-                                              <option value="0">Desativado</option>
-                                              <option value="1">Ativo</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-check">
-                                          <input name="restPass" class="form-check-input" id="flexCheckChecked" type="checkbox" value="" />
-                                          <label style="color: red;" class="form-check-label" for="flexCheckChecked">Resetar Senha?</label>
-                                        </div>
-                                
-                                      
-                                    </div>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <a class="btn btn-secondary" data-bs-dismiss="modal">Close</a>
-                                    <button class="btn btn-success" type="submit">Salvar</button></form>
-                                    <button class="btn btn-danger" data-bs-target="#delete_vendedor" data-bs-toggle="modal" onclick="send_id_del(this)">Deletar Vendedor</button>
+          <div class="row g-0">
+            <div class="col-lg-8 pe-lg-2">
+              <div class="card mb-3">
+                <div class="card-header bg-body-tertiary">
+                  <h6 class="mb-0">Informação Basica</h6>
+                </div>
+                <div class="card-body">
+                  
+                    <div class="row gx-2">
+                      <div class="col-12 mb-3">
+                        <label class="form-label" for="product-name">Nome do Produto:</label>
+                        <input class="form-control" id="product-name" name="nome-produto" type="text" />
+                      </div>
+                      
+                    </div>
+                  
+                </div>
+              </div>
 
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          <!-- MODAL EDIT VENDEDOR FIM -->
 
-                          <!-- MODAL DELETAR VENDEDOR -->
-                          <div class="modal fade" id="delete_vendedor" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
-                              <div class="modal-content position-relative">
-                                <div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
-                                  <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body p-0">
-                                  <div class="rounded-top-3 py-3 ps-4 pe-6 bg-body-tertiary">
-                                    <h4 class="mb-1" id="modalExampleDemoLabel">Deseja deletar este vendedor?</h4>
-                                  </div>
-                                  
-                                </div>
-                                <div class="modal-footer">
-                                  <button class="btn btn-success" data-bs-dismiss="modal">Não</button>
-                                  <form action="#" method="post">
-                                    <input name="deleteVendedor" hidden value="1">
-                                    <input id="reccive-id-del" name="id_del" hidden>
-                                    <button class="btn btn-danger" type="submit">Deletar </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <!-- MODAL DELETAR VENDEDOR FIM -->
-          
-        
+              <div class="card mb-3">
+                <div class="card-header bg-body-tertiary">
+                  <h6 class="mb-0">Fotos</h6>
+                </div>
+                <div class="card-body">
+                  
+                    <div class="row gx-2">
+                      <div class="col-12 mb-3">
+                        <input type="file" name="files[]" id="files" multiple>
+                      </div>
+                      
+                    </div>
+                  
+                </div>
+              </div>
+              
+                
+
+
+              <div class="card mb-3">
+                <div class="card-header bg-body-tertiary">
+                  <h6 class="mb-0">Descrição</h6>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-2">
+                    <div class="col-12 mb-3">
+                      <label class="form-label" for="">Product description:</label>
+                      <div class="create-product-description-textarea">
+                        <textarea class="tinymce d-none" data-tinymce="data-tinymce" name="descricao" id="product-description" ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="card mb-3 mb-lg-0" hidden>
+                <div class="card-header bg-body-tertiary">
+                  <h6 class="mb-0">Especificações</h6>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-2 flex-between-center mb-3" id="div-propiedade">
+                    teste
+                  </div>
+                  <div class="row gy-3 gx-2">
+                    <div class="col-sm-3">
+                      <input class="form-control form-control-sm" id="nome-propiedade" type="text" placeholder="Label" />
+                    </div>
+                    <div class="col-sm-9">
+                      <div class="d-flex gap-2 flex-between-center">
+                        <input class="form-control form-control-sm" id="especificacao-propiedade" type="text" placeholder="Property" />
+                        <div onclick="addPropiedade(this)" class="btn btn-sm btn-falcon-default">Add</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 ps-lg-2" >
+              <div class="sticky-sidebar">
+              
+                <div class="card mb-3">
+                  <div class="card-header bg-body-tertiary">
+                    <h6 class="mb-0">Valor</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="row gx-2">
+                      <div class="col-8 mb-3">
+                        <label class="form-label" for="base-price">Valor Base <span data-bs-toggle="tooltip" data-bs-placement="top" title="Product regular price"><span class="fas fa-question-circle text-primary fs-10 ms-1"></span></span></label>
+                        <input class="form-control" id="base-price" name="valor_base" type="text" />
+                      </div>
+                      
+                      <div class="col-12 mb-4" hidden>
+                        <label class="form-label" for="discount-percentage">Desconto em %</label>
+                        <input class="form-control" id="discount-percentage" name="desconto" type="text" />
+                      </div>
+                      <script>
+
+                      </script>
+                      <div class="col-12" hidden>
+                        <label class="form-label" for="final-price">Final price:<span data-bs-toggle="tooltip" data-bs-placement="top" title="Product final price"><span class="fas fa-question-circle text-primary fs-10 ms-1"></span></span></label>
+                        <input class="form-control" id="final-price" disabled="disabled" type="text" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card mb-3">
+                  <div class="card-header bg-body-tertiary">
+                    <h6 class="mb-0">Status</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-check">
+                      <input class="form-check-input p-2" id="in-stock" type="radio" name="status" value="1" />
+                      <label class="form-check-label fs-9 fw-normal text-700" for="in-stock">Ativado</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input p-2" id="unavailable" type="radio" name="status" value="0" checked />
+                      <label class="form-check-label fs-9 fw-normal text-700" for="unavailable">Desativar</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary" type="submit">Adicionar </button>
+
+        </form>
           
           <footer class="footer">
             <div class="row g-0 justify-content-between fs-10 mt-4 mb-3">
@@ -685,10 +590,10 @@
                   <h4 class="mb-0 text-white" id="authentication-modal-label">Register</h4>
                   <p class="fs-10 mb-0 text-white">Please create your free Falcon account</p>
                 </div>
-                <button class="btn-close position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="btn-close position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="modal" aria-label="Close"></div>
               </div>
               <div class="modal-body py-4 px-5">
-                <form>
+                <div>
                   <div class="mb-3">
                     <label class="form-label" for="modal-auth-name">Name</label>
                     <input class="form-control" type="text" autocomplete="on" id="modal-auth-name" />
@@ -712,9 +617,9 @@
                     <label class="form-label" for="modal-auth-register-checkbox">I accept the <a href="#!">terms </a>and <a class="white-space-nowrap" href="#!">privacy policy</a></label>
                   </div>
                   <div class="mb-3">
-                    <button class="btn btn-primary d-block w-100 mt-3" type="submit" name="submit">Register</button>
+                    <div class="btn btn-primary d-block w-100 mt-3" >Register</div>
                   </div>
-                </form>
+                </div>
                 <div class="position-relative mt-5">
                   <hr />
                   <div class="divider-content-center">or register with</div>
@@ -739,12 +644,12 @@
         <div class="z-1 py-1">
           <div class="d-flex justify-content-between align-items-center mb-1">
             <h5 class="text-white mb-0 me-2"><span class="fas fa-palette me-2 fs-9"></span>Settings</h5>
-            <button class="btn btn-primary btn-sm rounded-pill mt-0 mb-0" data-theme-control="reset" style="font-size:12px"> <span class="fas fa-redo-alt me-1" data-fa-transform="shrink-3"></span>Reset</button>
+            <div class="btn btn-primary btn-sm rounded-pill mt-0 mb-0" data-theme-control="reset" style="font-size:12px"> <span class="fas fa-redo-alt me-1" data-fa-transform="shrink-3"></span>Reset</div>
           </div>
           <p class="mb-0 fs-10 text-white opacity-75"> Set your own customized style</p>
         </div>
         <div class="z-1" data-bs-theme="dark">
-          <button class="btn-close z-1 mt-0" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          <div class="btn-close z-1 mt-0" type="div" data-bs-dismiss="offcanvas" aria-label="Close"></div>
         </div>
       </div>
       <div class="offcanvas-body scrollbar-overlay px-x1 h-100" id="themeController">
@@ -844,34 +749,30 @@
         </div><small class="text-uppercase text-primary fw-bold bg-primary-subtle py-2 pe-2 ps-1 rounded-end">customize</small>
       </div>
     </a>
-    <script>
-      function sendDadosVendedor_for_modalEditVendedor(ID){
-        const id = document.getElementById(ID+'id_row');
-        const n = document.getElementById(ID+'nome_row');
-        const e = document.getElementById(ID+'email_row');
-        const s = document.getElementById(ID+' st_row');
+<script>
+  let count=0;
+  function addPropiedade(){
+    const nome = document.getElementById('nome-propiedade').value;
+    const prop = document.getElementById('especificacao-propiedade').value;
+    const divP = document.getElementById('div-propiedade');
+    let elem=`
+                <div class='col-sm-3'>
+                  <h6 class='mb-0 text-600'>`+nome+`</h6>
+                </div>
+                <div class='col-sm-9'>
+                  <div class='d-flex flex-between-center'>
+                    <h6 class='mb-0 text-700'>`+prop+`</h6><a class='btn btn-sm btn-link text-danger' href='#!' data-bs-toggle='tooltip' data-bs-placement='top' title='Remove'><span class='fs-10 fas fa-trash-alt'></span></a>
+                  </div>
+                </div>
+                `;
+    divP.innerHTML=divP.innerHTML+elem;
+    count+=count;
+    console.log(elem);
+  }
+  function delPropiedade(){
 
-        const inp_id = document.getElementById('recipient-id');
-        const inp_nome = document.getElementById('recipient-name');
-        const inp_email = document.getElementById('recipient-email');
-        const inp_st = document.getElementById('recipient-st');
-        
-
-        inp_id.value=id.innerHTML;
-        inp_nome.value=n.innerHTML;
-        inp_email.value=e.innerHTML;
-        inp_st.value=(function(s){
-          if(s.innerHTML=="Ativo")return 1;return 0;
-        })(s);
-
-      }
-      function send_id_del(){
-        const inp_id = document.getElementById('recipient-id');
-        const idD = document.getElementById('reccive-id-del');
-        idD.value=inp_id.value;
-      }
-    </script>
-
+  }
+</script>
 
     <!-- ===============================================-->
     <!--    JavaScripts-->
@@ -880,7 +781,10 @@
     <script src="../vendors/bootstrap/bootstrap.min.js"></script>
     <script src="../vendors/anchorjs/anchor.min.js"></script>
     <script src="../vendors/is/is.min.js"></script>
-    <script src="../vendors/prism/prism.js"></script>
+    <script src="../vendors/tinymce/tinymce.min.js"></script>
+    <script src="../vendors/choices/choices.min.js"></script>
+    <script src="../vendors/flatpickr/flatpickr.min.js"></script>
+    <script src="../vendors/dropzone/dropzone-min.js"></script>
     <script src="../vendors/fontawesome/all.min.js"></script>
     <script src="../vendors/lodash/lodash.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>

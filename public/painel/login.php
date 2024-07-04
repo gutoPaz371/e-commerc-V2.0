@@ -1,3 +1,21 @@
+<?php
+  require_once "../../config/Database.php";
+  require_once "../../config/Crud.php";
+  if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    $data = new Database();
+    $db = $data->getConnection();
+    $adm = new Adm($db);
+    $adm->user=$_POST['user'];$adm->pass=$_POST['pass'];
+    if($id=$adm->fazerLogin()){
+      session_start();
+      $_SESSION['id']=$id;
+      header('location: ./vendedores.php');
+    }else{
+      header("locatio: ./login.php");
+    }
+
+  }
+?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en-US" dir="ltr">
 
@@ -79,12 +97,12 @@
                     <h5>Area Admin</h5>
                   </div>
                 </div>
-                <form>
+                <form action="#" method="post">
                   <div class="mb-3">
-                    <input class="form-control" type="email" placeholder="User" />
+                    <input name="user" class="form-control" type="text" placeholder="User" required/>
                   </div>
                   <div class="mb-3">
-                    <input class="form-control" type="password" placeholder="Password" />
+                    <input name="pass" class="form-control" type="password" placeholder="Password" required/>
                   </div>
                   <div class="row flex-between-center">
                     <div class="col-auto">

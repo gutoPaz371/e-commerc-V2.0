@@ -1,6 +1,7 @@
 <?php
 require_once "../../config/Database.php";
 require_once "../../config/Crud.php";
+
   function status($st){
     switch($st){
       case 0: 
@@ -462,7 +463,7 @@ require_once "../../config/Crud.php";
             <div class="card-body pt-0">
               <div class="tab-content">
                 <div class="tab-pane preview-tab-pane active" role="tabpanel" aria-labelledby="tab-dom-981b9811-5fc8-4709-addd-8dc4435e54f0" id="dom-981b9811-5fc8-4709-addd-8dc4435e54f0">
-                  <div id="tableExample3" data-list='{"valueNames":["name","email","age"],"page":5,"pagination":true}'>
+                  <div id="tableExample3" data-list='{"valueNames":["name","email","age"],"page":20,"pagination":true}'>
                     <div class="row justify-content-end g-0">
                       <div class="col-auto col-sm-5 mb-3">
                         <form>
@@ -488,21 +489,25 @@ require_once "../../config/Crud.php";
                           <?php $data = new Database();
                                 $db = $data->getConnection();
                                 $prod = new Produto($db);
-                                $res=(function($res){
-                                  while($row = $res->fetch_assoc()){
-                                    var_dump($res);
-                                  }
-                                })($res);
+                                $res = $prod->selectAll();
+                                while($row = $res->fetch_array()){
                           ?>
-                          <tr>
-                            <td class="">3</td>
-                            <td class="name">Oculos</td>
-                            <td class="age">R$500.00</td>
-                            <td class="email"><?php status(0) ?></td>
-                            <td class="age" style="text-align: right;">
-                                <button class="btn btn-info me-1 mb-1" type="button"><span class="far fa-edit"></span></button>
-                            </td>
-                          </tr>
+                            <tr>
+                              <td class=""><?php echo $row['id']; ?></td>
+                              <td class="name"><?php echo $row['nome']; ?></td>
+                              <td class="age"><?php echo "R$ ".$row['valor']; ?></td>
+                              <td class="email"><?php status(0) ?></td>
+                              <td class="age" style="text-align: right;">
+                                <form action="./edit-product.php" method="post">
+                                  <input hidden name="id" value="<?php echo $row['id']; ?>">
+                                  <input hidden name="token" value="<?php echo md5(md5($row['id']).md5($row['id'])); ?>">
+                                  <button class="btn btn-info me-1 mb-1" type="submit">
+                                    <span class="far fa-edit"></span>
+                                  </button>
+                                </form>
+                              </td>
+                            </tr>
+                          <?php } ?>
                          
                         </tbody>
                       </table>

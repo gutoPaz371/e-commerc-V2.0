@@ -96,7 +96,8 @@
         public function insert(){
             $sql="INSERT INTO vendedor (senha,nome,email,status,id_endereco) VALUES (?,?,?,?,?)";
             $stmt=$this->conn->prepare($sql);
-            $stmt->bind_param("sssiii",$this->senha,$this->nome,$this->email,$this->st,$this->id_end);
+            $this->senha=password_hash($this->senha,PASSWORD_DEFAULT);
+            $stmt->bind_param("sssii",$this->senha,$this->nome,$this->email,$this->st,$this->id_end);
             if($stmt->execute())return true;return false;
 
         }
