@@ -1,7 +1,7 @@
 <?php
+require_once "./Session.php";
 require_once "../../config/Database.php";
 require_once "../../config/Crud.php";
-
   function status($st){
     switch($st){
       case 0: 
@@ -431,7 +431,7 @@ require_once "../../config/Crud.php";
 
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="../pages/user/settings.html">Settings</a>
-                    <a class="dropdown-item" href="../pages/authentication/card/logout.html">Logout</a>
+                    <a class="dropdown-item" href="./Sair.php">Logout</a>
                   </div>
                 </div>
               </li>
@@ -455,7 +455,7 @@ require_once "../../config/Crud.php";
                 </div>
                 <div class="col-auto ms-auto">
                   <div class="nav nav-pills nav-pills-falcon flex-grow-1 mt-2" role="tablist">
-                          <a href="./add-product.php">Adicionar Produto</a>
+                          <a href="./add-product.php" class="btn btn-success me-1 mb-1"><span class="fas fa-cart-plus"></span></a>
                   </div>
                 </div>
               </div>
@@ -496,7 +496,7 @@ require_once "../../config/Crud.php";
                               <td class=""><?php echo $row['id']; ?></td>
                               <td class="name"><?php echo $row['nome']; ?></td>
                               <td class="age"><?php echo "R$ ".$row['valor']; ?></td>
-                              <td class="email"><?php status(0) ?></td>
+                              <td class="email"><?php status($row['status']); ?></td>
                               <td class="age" style="text-align: right;">
                                 <form action="./edit-product.php" method="post">
                                   <input hidden name="id" value="<?php echo $row['id']; ?>">

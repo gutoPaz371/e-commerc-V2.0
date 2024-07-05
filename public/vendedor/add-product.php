@@ -1,10 +1,8 @@
 <?php
+  require_once "./Session.php";
   require_once "../../config/Database.php";
   require_once "../../config/Crud.php";
   if(isset($_POST['post_addProduto']) && $_POST['post_addProduto']==1){
-    // var_dump($_POST);
-    //nome-produto,descricao,valor_base,status
-    // var_dump($_FILES['files']);
     (function(){
       $data = new Database();
       $db = $data->getConnection();
@@ -452,8 +450,8 @@
                 </div>
                 <form action="#" method="post" enctype="multipart/form-data">
                   
-                <div class="col-auto"><input value="1" name="post_addProduto">
-                  <a class="btn btn-link text-secondary p-0 me-3 fw-medium" role="div">Discartar</a>
+                <div class="col-auto"><input value="1" name="post_addProduto" hidden>
+                  <a class="btn btn-link text-secondary p-0 me-3 fw-medium" role="div" href="./produtos.php">Discartar</a>
                   <button class="btn btn-primary" type="submit">Adicionar </button>
 
                 </div>

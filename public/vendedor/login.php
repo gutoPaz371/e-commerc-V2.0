@@ -8,8 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $vend->email=$_POST['email'];
   $vend->senha=$_POST['senha'];
   if($id=$vend->fazerLogin()){
-    echo "fazer login";
-  }
+    session_start();
+    $_SESSION['id']=$id;
+    header("location: ./main.php");
+  }else header("location: ./login.php?err=1");
 }
 ?>
 <!DOCTYPE html>
@@ -95,10 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <form action="#" method="post">
                   <div class="mb-3">
-                    <input name="email" class="form-control" type="email" placeholder="Email" />
+                    <input required name="email" class="form-control" type="email" placeholder="Email" />
                   </div>
                   <div class="mb-3">
-                    <input name="senha" class="form-control" type="password" placeholder="Password" />
+                    <input required name="senha" class="form-control" type="password" placeholder="Password" />
                   </div>
                   <div class="row flex-between-center">
                     <div class="col-auto">
@@ -117,6 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
       </div>
     </main>
+
+ 
     <!-- ===============================================-->
     <!--    End of Main Content-->
     <!-- ===============================================-->
@@ -232,11 +236,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div><small class="text-uppercase text-primary fw-bold bg-primary-subtle py-2 pe-2 ps-1 rounded-end">customize</small>
       </div>
     </a>
-
-
     <!-- ===============================================-->
     <!--    JavaScripts-->
-    <!-- ===============================================-->
+    <!-- ===============================================-->     
     <script src="../vendors/popper/popper.min.js"></script>
     <script src="../vendors/bootstrap/bootstrap.min.js"></script>
     <script src="../vendors/anchorjs/anchor.min.js"></script>

@@ -53,9 +53,9 @@
             if($stmt->execute())return true;return false;
         }
         public function update(){
-            $sql="UPDATE produtos SET nome=?,valor=?,descricao=? WHERE id=?";
+            $sql="UPDATE produtos SET nome=?,valor=?,descricao=?,status=? WHERE id=?";
             $stmt=$this->conn->prepare($sql);
-            $stmt->bind_param("sssi",$this->nome,$this->valor,$this->desc,$this->id);
+            $stmt->bind_param("sssii",$this->nome,$this->valor,$this->desc,$this->status,$this->id);
             if($stmt->execute())return true;return false;
         }        
         public function selectAll(){
@@ -68,7 +68,7 @@
             $stmt=$this->conn->prepare($sql);
             $stmt->bind_param("i",$this->id);
             if($stmt->execute()){
-                unlink("../../public/uploads/$this->id.png");
+                //unlink("../../public/uploads/$this->id.png");
                 return true;
             }return false;
         }
@@ -92,6 +92,18 @@
         public function __construct($db)
         {
             $this->conn=$db;
+        }
+        public function fazerLogin(){
+            $sql="SELECT senha, id, status as st FROM vendedor WHERE email=?";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param('s',$this->email);
+            if($stmt->execute()){
+                $res=$stmt->get_result()->fetch_assoc();
+                if($res['st']==1){
+                    if(password_verify($this->senha,$res['senha']))return $res['id'];return false;
+                }else return false;            
+                
+            }
         }
         public function insert(){
             $sql="INSERT INTO vendedor (senha,nome,email,status,id_endereco) VALUES (?,?,?,?,?)";

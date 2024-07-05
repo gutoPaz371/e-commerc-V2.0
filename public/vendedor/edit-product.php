@@ -1,5 +1,50 @@
 <?php
-  //if()
+require_once "./Session.php";
+require_once "../../config/Database.php";
+require_once "../../config/Crud.php";
+//VERIFICAR METODO
+if($_SERVER['REQUEST_METHOD']!="POST"){
+  header("HTTP/1.1 405 Method Not Allowed");
+  echo "Método não permitido. Por favor, use o método POST.";
+  exit();
+}
+//VERIFICAR TOKEN & ID
+if(!isset($_POST['id']) && !isset($_POST['token'])){
+  if(isset($_POST['id_del']) && $_POST['id_del']!=null){
+    $data = new Database();
+    $db = $data->getConnection();
+    $p = new Produto($db);
+    $p->id=$_POST['id_del'];
+    if($p->delete()){header('location: ./produtos.php');exit;}
+    else header("HTTP/1.1 405 Method Not Allowed");echo "ERRO NO BANCO DE DADOS";exit();
+  }
+  if(isset($_POST['post_editProduto']) && $_POST['post_editProduto']==1){
+    $data = new Database();
+    $db = $data->getConnection();
+    $p = new Produto($db);
+    $p->id=$_POST['idP'];
+    $p->nome=$_POST['nome-produto'];
+    $p->desc=$_POST['descricao'];
+    $p->valor=$_POST['valor_base'];
+    $p->status=$_POST['status'];
+    if($p->update()){header("location: ./produtos.php");exit();}
+    else header("HTTP/1.1 405 Method Not Allowed");echo "ERRO NO BANCO DE DADOS";exit();
+  }else{
+    header("HTTP/1.1 405 Method Not Allowed");
+    echo "NULL";
+    exit();
+  }  
+}
+//VALIDAR ID
+elseif($_POST['token']!=md5(md5($_POST['id']).md5($_POST['id']))){
+  header("HTTP/1.1 405 Method Not Allowed");
+  echo "IVALIDO";
+  exit();
+}
+$data = new Database();
+$db = $data->getConnection();
+$p = new Produto($db);
+$res=$p->selectAll()->fetch_assoc();
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en-US" dir="ltr">
@@ -431,13 +476,15 @@
             <div class="card-body">
               <div class="row flex-between-center">
                 <div class="col-md">
-                  <h5 class="mb-2 mb-md-0">Adicionar Produto</h5>
+                  <h5 class="mb-2 mb-md-0">Editar Produto</h5>
                 </div>
+                
+
                 <form action="#" method="post" enctype="multipart/form-data">
-                  
-                <div class="col-auto"><input value="1" name="post_addProduto">
-                  <a class="btn btn-link text-secondary p-0 me-3 fw-medium" role="div">Discartar</a>
-                  <button class="btn btn-primary" type="submit">Adicionar </button>
+                  <input value="<?php echo $res['id']; ?>" name="idP" hidden>
+                <div class="col-auto"><input value="1" name="post_editProduto" hidden>
+                  <a class="btn btn-link text-secondary p-0 me-3 fw-medium" role="div" href="./produtos.php">Discartar</a>
+                  <button class="btn btn-success" type="submit">Salvar </button>
 
                 </div>
               </div>
@@ -454,7 +501,7 @@
                     <div class="row gx-2">
                       <div class="col-12 mb-3">
                         <label class="form-label" for="product-name">Nome do Produto:</label>
-                        <input class="form-control" id="product-name" name="nome-produto" type="text" />
+                        <input class="form-control" value="<?php echo $res['nome'] ?>" id="product-name" name="nome-produto" type="text" />
                       </div>
                       
                     </div>
@@ -491,7 +538,9 @@
                     <div class="col-12 mb-3">
                       <label class="form-label" for="">Product description:</label>
                       <div class="create-product-description-textarea">
-                        <textarea class="tinymce d-none" data-tinymce="data-tinymce" name="descricao" id="product-description" ></textarea>
+                        <textarea class="tinymce d-none" data-tinymce="data-tinymce" name="descricao" id="product-description" >
+                          <?php echo $res['descricao'] ?>
+                        </textarea>
                       </div>
                     </div>
                   </div>
@@ -531,7 +580,7 @@
                     <div class="row gx-2">
                       <div class="col-8 mb-3">
                         <label class="form-label" for="base-price">Valor Base <span data-bs-toggle="tooltip" data-bs-placement="top" title="Product regular price"><span class="fas fa-question-circle text-primary fs-10 ms-1"></span></span></label>
-                        <input class="form-control" id="base-price" name="valor_base" type="text" />
+                        <input value="<?php echo $res['valor'] ?>" class="form-control" id="base-price" name="valor_base" type="text" />
                       </div>
                       
                       <div class="col-12 mb-4" hidden>
@@ -549,27 +598,91 @@
                   </div>
                 </div>
                 
+                
+                
+                <div class="card mb-3">
+                  <div class="card-header bg-body-tertiary">
+                    <h6 class="mb-0">Status</h6>
+                  </div>
+                    <?php
+                      if($res['status']==1){
+                        echo "                  <div class='card-body'>
+                    <div class='form-check'>
+                      <input class='form-check-input p-2' id='in-stock' type='radio' name='status' value='1' checked/>
+                      <label class='form-check-label fs-9 fw-normal text-700' for='in-stock'>Ativado</label>
+                    </div>
+                    <div class='form-check'>
+                      <input class='form-check-input p-2' id='unavailable' type='radio' name='status' value='0'  />
+                      <label class='form-check-label fs-9 fw-normal text-700' for='unavailable'>Desativar</label>
+                    </div>
+                  </div>";
+                      }elseif($res['status']==0){
+                        echo "                  <div class='card-body'>
+                    <div class='form-check'>
+                      <input class='form-check-input p-2' id='in-stock' type='radio' name='status' value='1' />
+                      <label class='form-check-label fs-9 fw-normal text-700' for='in-stock'>Ativado</label>
+                    </div>
+                    <div class='form-check'>
+                      <input class='form-check-input p-2' id='unavailable' type='radio' name='status' value='0'  checked/>
+                      <label class='form-check-label fs-9 fw-normal text-700' for='unavailable'>Desativar</label>
+                    </div>
+                  </div>";
+                      }
+                    ?>
+                  
+
+    
+                </div>
+
                 <div class="card mb-3">
                   <div class="card-header bg-body-tertiary">
                     <h6 class="mb-0">Status</h6>
                   </div>
                   <div class="card-body">
-                    <div class="form-check">
-                      <input class="form-check-input p-2" id="in-stock" type="radio" name="status" value="1" />
-                      <label class="form-check-label fs-9 fw-normal text-700" for="in-stock">Ativado</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input p-2" id="unavailable" type="radio" name="status" value="0" checked />
-                      <label class="form-check-label fs-9 fw-normal text-700" for="unavailable">Desativar</label>
+                    <div class="row gx-2">
+                      <div class="col-8 mb-3">
+                        <div class="col-auto">
+                          <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delProd" onclick="sendeDeleteModal(<?php echo $res['id']; ?>)">Deletar </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                  
+
+    
                 </div>
               </div>
             </div>
           </div>
-          <button class="btn btn-primary" type="submit">Adicionar </button>
+          <button class="btn btn-success" type="submit">Salvar </button>
 
         </form>
+
+          <!-- MODAL DELETE -->
+          <div class="modal fade" id="delProd" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 500px">
+              <div class="modal-content position-relative">
+                <div class="position-absolute top-0 end-0 mt-2 me-2 z-1">
+                  <button class="btn-close btn btn-sm btn-circle d-flex flex-center transition-base" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                  <div class="rounded-top-3 py-3 ps-4 pe-6 bg-body-tertiary">
+                    <h4 class="mb-1" id="modalExampleDemoLabel">Deseja deletar este produto?</h4>
+                  </div>
+                  
+                </div>
+                <div class="modal-footer">
+                  <a class="btn btn-success" type="button" data-bs-dismiss="modal">Não</a>
+                  <form action="#" method="post">
+                    <input value="1" name="del_prod" hidden>
+                    <input name="id_del" id="input-id-del" hidden>
+                    <button class="btn btn-danger" type="submit">Sim</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- MODAL DELETE FIM  -->
           
           <footer class="footer">
             <div class="row g-0 justify-content-between fs-10 mt-4 mb-3">
@@ -750,27 +863,11 @@
       </div>
     </a>
 <script>
-  let count=0;
-  function addPropiedade(){
-    const nome = document.getElementById('nome-propiedade').value;
-    const prop = document.getElementById('especificacao-propiedade').value;
-    const divP = document.getElementById('div-propiedade');
-    let elem=`
-                <div class='col-sm-3'>
-                  <h6 class='mb-0 text-600'>`+nome+`</h6>
-                </div>
-                <div class='col-sm-9'>
-                  <div class='d-flex flex-between-center'>
-                    <h6 class='mb-0 text-700'>`+prop+`</h6><a class='btn btn-sm btn-link text-danger' href='#!' data-bs-toggle='tooltip' data-bs-placement='top' title='Remove'><span class='fs-10 fas fa-trash-alt'></span></a>
-                  </div>
-                </div>
-                `;
-    divP.innerHTML=divP.innerHTML+elem;
-    count+=count;
-    console.log(elem);
-  }
-  function delPropiedade(){
+  function sendeDeleteModal(id){
+    const inputId = document.getElementById('input-id-del');
+    inputId.value=id;
 
+    console.log(t);
   }
 </script>
 
