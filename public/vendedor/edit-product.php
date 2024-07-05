@@ -2,6 +2,94 @@
 require_once "./Session.php";
 require_once "../../config/Database.php";
 require_once "../../config/Crud.php";
+function salveImg($id){
+  // Diretório onde as imagens serão salvas
+  $targetDir = "uploads/produtos/fts/$id/";
+
+  if (!file_exists($targetDir)) {
+      mkdir($targetDir, 0777, true);
+  }
+
+  // Verifica se o formulário foi enviado
+  if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['images'])) {
+      $images = $_FILES['images'];
+
+      // Loop através de todas as imagens
+      for ($i = 0; $i < count($images['name']); $i++) {
+        // $imageName = basename($images['name'][$i]);
+          $nomeArquivo = $images['name'][$i];
+          $imageName = basename($i.".".pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+          $targetFilePath = $targetDir . $imageName;
+          $imageType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+
+          // Verificação de tipos de arquivos permitidos
+          $allowedTypes = array('jpg', 'jpeg', 'png', 'gif', 'jfif');
+          if (in_array($imageType, $allowedTypes)) {
+              // Verifica se houve algum erro durante o upload
+              if ($images['error'][$i] === UPLOAD_ERR_OK) {
+                  // Move o arquivo para o diretório de destino
+                  if (move_uploaded_file($images['tmp_name'][$i], $targetFilePath)) {
+                      echo "A imagem $imageName foi enviada com sucesso.<br>";
+                  } else {
+                      echo "Erro ao enviar a imagem $imageName.<br>";
+                  }
+              } else {
+                  echo "Erro ao fazer upload da imagem $imageName. Código de erro: " . $images['error'][$i] . "<br>";
+              }
+          } else {
+              echo "Tipo de arquivo não permitido para a imagem $imageName.<br>";
+          }
+      }
+  } else {
+      echo "Nenhuma imagem foi enviada.";
+  }
+}
+function apagarConteudoDaPasta($diretorio) {
+  // Verifica se o diretório existe
+  if (is_dir($diretorio)) {
+      // Obtém a lista de arquivos e subdiretórios no diretório
+      $arquivos = glob($diretorio . '/*');
+
+      // Itera sobre cada item
+      foreach ($arquivos as $arquivo) {
+          // Verifica se é um arquivo regular e deleta
+          if (is_file($arquivo)) {
+              unlink($arquivo); // Deleta o arquivo
+          } elseif (is_dir($arquivo)) {
+              // Se for um diretório, chama recursivamente para deletar seu conteúdo
+              apagarConteudoDaPasta($arquivo);
+              rmdir($arquivo); // Remove o diretório vazio
+          }
+      }
+      return true;
+  } else {
+      return false; // Retorna falso se o diretório não existir
+  }
+}
+function delProdFts($diretorio) {
+  if (!is_dir($diretorio)) {
+      return false; // Retorna falso se o diretório não existir
+  }
+
+  // Obtém a lista de arquivos e subdiretórios no diretório
+  $arquivos = glob($diretorio . '/*');
+
+  // Itera sobre cada item
+  foreach ($arquivos as $arquivo) {
+      // Verifica se é um arquivo regular e deleta
+      if (is_file($arquivo)) {
+          unlink($arquivo); // Deleta o arquivo
+      } elseif (is_dir($arquivo)) {
+          // Se for um diretório, chama recursivamente para deletar seu conteúdo
+          delProdFts($arquivo);
+      }
+  }
+
+  // Após deletar todos os arquivos e subdiretórios, remove o diretório pai
+  rmdir($diretorio);
+
+  return true; // Retorna verdadeiro se a pasta e seu conteúdo foram apagados com sucesso
+}
 //VERIFICAR METODO
 if($_SERVER['REQUEST_METHOD']!="POST"){
   header("HTTP/1.1 405 Method Not Allowed");
@@ -15,9 +103,13 @@ if(!isset($_POST['id']) && !isset($_POST['token'])){
     $db = $data->getConnection();
     $p = new Produto($db);
     $p->id=$_POST['id_del'];
-    if($p->delete()){header('location: ./produtos.php');exit;}
+    if($p->delete()){
+      if(delProdFts("./uploads/produtos/fts/".$_POST['id_del']));
+      header('location: ./produtos.php');
+      exit;}
     else header("HTTP/1.1 405 Method Not Allowed");echo "ERRO NO BANCO DE DADOS";exit();
   }
+  //UPDATE PRODUTO
   if(isset($_POST['post_editProduto']) && $_POST['post_editProduto']==1){
     $data = new Database();
     $db = $data->getConnection();
@@ -27,7 +119,18 @@ if(!isset($_POST['id']) && !isset($_POST['token'])){
     $p->desc=$_POST['descricao'];
     $p->valor=$_POST['valor_base'];
     $p->status=$_POST['status'];
-    if($p->update()){header("location: ./produtos.php");exit();}
+    if($p->update()){
+      if(strlen($_FILES['images']['name'][0])!=0){
+        if(apagarConteudoDaPasta('./uploads/produtos/fts/'.$_POST['idP']."/")){
+          salveImg($_POST['idP']);
+          header("location: ./produtos.php");
+          exit();
+        }
+      }else{
+        header("location: ./produtos.php");
+        exit();
+      }
+    }
     else header("HTTP/1.1 405 Method Not Allowed");echo "ERRO NO BANCO DE DADOS";exit();
   }else{
     header("HTTP/1.1 405 Method Not Allowed");
@@ -41,6 +144,7 @@ elseif($_POST['token']!=md5(md5($_POST['id']).md5($_POST['id']))){
   echo "IVALIDO";
   exit();
 }
+
 $data = new Database();
 $db = $data->getConnection();
 $p = new Produto($db);
@@ -518,7 +622,7 @@ $res=$p->selectAll()->fetch_assoc();
                   
                     <div class="row gx-2">
                       <div class="col-12 mb-3">
-                        <input type="file" name="files[]" id="files" multiple>
+                        <input type="file" name="images[]" id="files" multiple>
                       </div>
                       
                     </div>
@@ -636,7 +740,7 @@ $res=$p->selectAll()->fetch_assoc();
 
                 <div class="card mb-3">
                   <div class="card-header bg-body-tertiary">
-                    <h6 class="mb-0">Status</h6>
+                    <h6 class="mb-0">Ação</h6>
                   </div>
                   <div class="card-body">
                     <div class="row gx-2">

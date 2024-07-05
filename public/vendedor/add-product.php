@@ -2,6 +2,49 @@
   require_once "./Session.php";
   require_once "../../config/Database.php";
   require_once "../../config/Crud.php";
+  function salveImg($id){
+    // Diretório onde as imagens serão salvas
+    $targetDir = "uploads/produtos/fts/$id/";
+
+    if (!file_exists($targetDir)) {
+        mkdir($targetDir, 0777, true);
+    }
+
+    // Verifica se o formulário foi enviado
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['images'])) {
+        $images = $_FILES['images'];
+
+        // Loop através de todas as imagens
+        for ($i = 0; $i < count($images['name']); $i++) {
+          // $imageName = basename($images['name'][$i]);
+            $nomeArquivo = $images['name'][$i];
+            $imageName = basename($i.".".pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+            $targetFilePath = $targetDir . $imageName;
+            $imageType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+
+            // Verificação de tipos de arquivos permitidos
+            $allowedTypes = array('jpg', 'jpeg', 'png', 'gif', 'jfif');
+            if (in_array($imageType, $allowedTypes)) {
+                // Verifica se houve algum erro durante o upload
+                if ($images['error'][$i] === UPLOAD_ERR_OK) {
+                    // Move o arquivo para o diretório de destino
+                    if (move_uploaded_file($images['tmp_name'][$i], $targetFilePath)) {
+                        echo "A imagem $imageName foi enviada com sucesso.<br>";
+                    } else {
+                        echo "Erro ao enviar a imagem $imageName.<br>";
+                    }
+                } else {
+                    echo "Erro ao fazer upload da imagem $imageName. Código de erro: " . $images['error'][$i] . "<br>";
+                }
+            } else {
+                echo "Tipo de arquivo não permitido para a imagem $imageName.<br>";
+            }
+        }
+    } else {
+        echo "Nenhuma imagem foi enviada.";
+    }
+  }
+  //INSERT PRODUTO
   if(isset($_POST['post_addProduto']) && $_POST['post_addProduto']==1){
     (function(){
       $data = new Database();
@@ -11,7 +54,10 @@
       $prod->desc=$_POST['descricao'];
       $prod->valor=$_POST['valor_base'];
       $prod->status=$_POST['status'];
-      if($prod->insert())header("location: ./add-product.php");return false;
+      if($prod->insert()){
+        salveImg($prod->selectMaxId("produtos"));
+        header("location: ./produtos.php");
+      }else return false;
     })($_POST);
   }
   
@@ -486,7 +532,7 @@
                   
                     <div class="row gx-2">
                       <div class="col-12 mb-3">
-                        <input type="file" name="files[]" id="files" multiple>
+                        <input type="file" name="images[]" id="files" multiple accept="image/*">
                       </div>
                       
                     </div>

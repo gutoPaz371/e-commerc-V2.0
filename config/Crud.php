@@ -72,7 +72,7 @@
                 return true;
             }return false;
         }
-        private function selectMaxId($table) {
+        public function selectMaxId($table) {
             $sql = "SELECT MAX(id) as id FROM ".$table;
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
