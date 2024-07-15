@@ -63,6 +63,11 @@
             $stmt=$this->conn->prepare($sql);
             if($stmt->execute())return $stmt->get_result();return false;
         }
+        public function selectAllAtive(){
+            $sql="SELECT * FROM produtos WHERE status=1";
+            $stmt=$this->conn->prepare($sql);
+            if($stmt->execute())return $stmt->get_result();return false;
+        }
         public function delete(){
             $sql="DELETE FROM produtos WHERE id=?";
             $stmt=$this->conn->prepare($sql);
@@ -150,17 +155,11 @@
             $stmt=$this->conn->prepare($sql);
             $stmt->bind_param("s",$this->email);
             if($stmt->execute()){
-                $res=(function($res){
-                    return $res->fetch_array();
-                })($stmt->get_result());
-                $pass=(function($res){
-                    if($res!=null)return $res['senha'];return "";
-                })($res);
-                $id=(function($res){
-                    if($res!=null)return $res['id'];return "";
-                })($res);
-                if(password_verify($this->senha,$pass))return $id;return false;
-            }return false;
+                $res=$stmt->get_result()->fetch_array();
+                if($res!=null){
+                    if(password_verify($this->senha,$res['senha']))return $res['id'];return false;
+                }return false;
+            }
        }
        public function insert(){
             $sql="INSERT INTO cliente (nome,email,senha,id_endereco) VALUES (?,?,?,?)";

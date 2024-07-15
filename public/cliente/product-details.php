@@ -1,5 +1,26 @@
 <?php
-    require_once "./Session.php";
+function consultar(){
+  require_once "../../config/Database.php";
+  require_once "../../config/Crud.php";
+  $data = new Database();
+  $db = $data->getConnection();
+  $prods = new Produto($db);
+  $res = $prods->selectAllAtive()->fetch_assoc();
+  return $res;
+}
+if(isset($_GET['id']) && isset($_GET['token'])){
+  $id=$_GET['id'];$token=$_GET['token'];
+  if(strlen($id)!=0 && strlen($token)!=0){
+    $auth=md5(md5($id).md5($id));
+    if($token==$auth){
+      $res=consultar();
+    }else{
+      header("HTTP 404");
+      echo "Pagina Não Encontrada!!!";
+      exit();
+    }
+  }
+}
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en-US" dir="ltr">
@@ -33,10 +54,7 @@
     <!-- ===============================================-->
     <!--    Stylesheets-->
     <!-- ===============================================-->
-    <link href="../vendors/leaflet/leaflet.css" rel="stylesheet">
-    <link href="../vendors/leaflet.markercluster/MarkerCluster.css" rel="stylesheet">
-    <link href="../vendors/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet">
-    <link href="../vendors/flatpickr/flatpickr.min.css" rel="stylesheet">
+    <link href="../vendors/swiper/swiper-bundle.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700%7cPoppins:300,400,500,600,700,800,900&amp;display=swap" rel="stylesheet">
     <link href="../vendors/simplebar/simplebar.min.css" rel="stylesheet">
@@ -77,330 +95,12 @@
             container.classList.add('container-fluid');
           }
         </script>
-        <nav class="navbar navbar-light navbar-vertical navbar-expand-xl">
-          <script>
-            var navbarStyle = localStorage.getItem("navbarStyle");
-            if (navbarStyle && navbarStyle !== 'transparent') {
-              document.querySelector('.navbar-vertical').classList.add(`navbar-${navbarStyle}`);
-            }
-          </script>
-          <div class="d-flex align-items-center">
-            <div class="toggle-icon-wrapper">
-
-              <button class="btn navbar-toggler-humburger-icon navbar-vertical-toggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
-
-            </div><a class="navbar-brand" href="./public/index.html">
-              <div class="d-flex align-items-center py-3"><img class="me-2" src="./public/assets/img/icons/spot-illustrations/falcon.png" alt="" width="40" /><span class="font-sans-serif text-primary">falcon</span>
-              </div>
-            </a>
-          </div>
-          <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
-            <div class="navbar-vertical-content scrollbar">
-              <ul class="navbar-nav flex-column mb-3" id="navbarVerticalNav">
-                
-                <li class="nav-item">
-                  <!-- label-->
-                  <div class="row navbar-vertical-label-wrapper mt-3 mb-2">
-                    <div class="col-auto navbar-vertical-label">App
-                    </div>
-                    <div class="col ps-0">
-                      <hr class="mb-0 navbar-vertical-divider" />
-                    </div>
-                  </div>
-                  <!-- parent pages--><a class="nav-link" href="./public/app/calendar.html" role="button">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-alt"></span></span><span class="nav-link-text ps-1">Calendar</span>
-                    </div>
-                  </a>
-                  <!-- parent pages--><a class="nav-link" href="./public/app/chat.html" role="button">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-comments"></span></span><span class="nav-link-text ps-1">Chat</span>
-                    </div>
-                  </a>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#email" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="email">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-envelope-open"></span></span><span class="nav-link-text ps-1">Email</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="email">
-                    <li class="nav-item"><a class="nav-link" href="./public/app/email/inbox.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Inbox</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/email/email-detail.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Email detail</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/email/compose.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Compose</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#events" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="events">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-day"></span></span><span class="nav-link-text ps-1">Events</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="events">
-                    <li class="nav-item"><a class="nav-link" href="./public/app/events/create-an-event.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Create an event</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/events/event-detail.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Event detail</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/events/event-list.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Event list</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#e-commerce" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="e-commerce">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-shopping-cart"></span></span><span class="nav-link-text ps-1">E commerce</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse show" id="e-commerce">
-                    <li class="nav-item"><a class="nav-link dropdown-indicator" href="#product" data-bs-toggle="collapse" aria-expanded="true" aria-controls="e-commerce">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Product</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                      <ul class="nav collapse show" id="product">
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/product/product-list.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Product list</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/product/product-grid.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Product grid</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link active" href="./public/app/e-commerce/product/product-details.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Product details</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/product/add-product.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Add product</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link dropdown-indicator" href="#orders" data-bs-toggle="collapse" aria-expanded="false" aria-controls="e-commerce">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Orders</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                      <ul class="nav collapse" id="orders">
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/orders/order-list.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Order list</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/orders/order-details.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Order details</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/customers.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Customers</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/customer-details.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Customer details</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/shopping-cart.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Shopping cart</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/checkout.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Checkout</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/billing.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Billing</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/invoice.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Invoice</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#e-learning" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="e-learning">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-graduation-cap"></span></span><span class="nav-link-text ps-1">E learning</span><span class="badge rounded-pill ms-2 badge-subtle-success">New</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="e-learning">
-                    <li class="nav-item"><a class="nav-link dropdown-indicator" href="#course" data-bs-toggle="collapse" aria-expanded="false" aria-controls="e-learning">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Course</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                      <ul class="nav collapse" id="course">
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/course/course-list.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Course list</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/course/course-grid.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Course grid</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/course/course-details.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Course details</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/course/create-a-course.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Create a course</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/student-overview.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Student overview</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/trainer-profile.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Trainer profile</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link" href="./public/app/kanban.html" role="button">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fab fa-trello"></span></span><span class="nav-link-text ps-1">Kanban</span>
-                    </div>
-                  </a>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#social" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="social">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-share-alt"></span></span><span class="nav-link-text ps-1">Social</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="social">
-                    <li class="nav-item"><a class="nav-link" href="./public/app/social/feed.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Feed</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/social/activity-log.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Activity log</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/social/notifications.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Notifications</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/social/followers.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Followers</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#support-desk" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="support-desk">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-ticket-alt"></span></span><span class="nav-link-text ps-1">Support desk</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="support-desk">
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/table-view.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Table view</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/card-view.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Card view</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/contacts.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Contacts</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/contact-details.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Contact details</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/tickets-preview.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Tickets preview</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/quick-links.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Quick links</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/reports.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Reports</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                </li>
-               
-              </ul>
-
-            </div>
-          </div>
-        </nav>
+        
         <div class="content">
           <nav class="navbar navbar-light navbar-glass navbar-top navbar-expand">
 
             <button class="btn navbar-toggler-humburger-icon navbar-toggler me-1 me-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
-            <a class="navbar-brand me-1 me-sm-3" href="#">
+            <a class="navbar-brand me-1 me-sm-3" href="../index.html">
               <div class="d-flex align-items-center"><img class="me-2" src="../assets/img/icons/spot-illustrations/falcon.png" alt="" width="40" /><span class="font-sans-serif text-primary">falcon</span>
               </div>
             </a>
@@ -725,14 +425,13 @@
               </li>
               <li class="nav-item dropdown"><a class="nav-link pe-0 ps-2" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <div class="avatar avatar-xl">
-                    <img class="rounded-circle" src="../assets/img/team/3-thumb.png" alt="" />
+                    <img class="rounded-circle" src="../assets/img/team/4-thumb.png" alt="" />
 
                   </div>
                 </a>
                 <div class="dropdown-menu dropdown-caret dropdown-caret dropdown-menu-end py-0" aria-labelledby="navbarDropdownUser">
                   <div class="bg-white dark__bg-1000 rounded-2 py-2">
                     <a class="dropdown-item fw-bold text-warning" href="#!"><span class="fas fa-crown me-1"></span><span>Go Pro</span></a>
-
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#!">Set status</a>
                     <a class="dropdown-item" href="../pages/user/profile.html">Profile &amp; account</a>
@@ -740,104 +439,165 @@
 
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="../pages/user/settings.html">Settings</a>
-                    <a class="dropdown-item" href="./Sair.php">Logout</a>
+                    <a class="dropdown-item" href="../pages/authentication/card/logout.html">Logout</a>
                   </div>
                 </div>
               </li>
             </ul>
           </nav>
-          <div class="row g-3 mb-3">
-            <div class="col-xxl-6 col-lg-12">
-              <div class="card h-100">
-                <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-3.png);">
-                </div>
-                <!--/.bg-holder-->
-
-                
-                
-              </div>
-            </div>
-           
-            
-          </div>
-          <div class="row g-3 mb-3">
-            <div class="col-xxl-6 col-lg-12">
+          <div class="card">
+            <div class="card-body">
               <div class="row">
-                <div class="col-lg-12">
-                  <div class="row g-3 mb-3">
-                    <div class="col-sm-6">
-                      <div class="card overflow-hidden" style="min-width: 12rem">
-                        <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-1.png);">
-                        </div>
-                        <!--/.bg-holder-->
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                  <div class="product-slider" id="galleryTop">
+                    <div class="swiper theme-slider position-lg-absolute all-0" data-swiper='{"autoHeight":true,"spaceBetween":5,"loop":true,"loopedSlides":5,"thumb":{"spaceBetween":5,"slidesPerView":5,"loop":true,"freeMode":true,"grabCursor":true,"loopedSlides":5,"centeredSlides":true,"slideToClickedSlide":true,"watchSlidesVisibility":true,"watchSlidesProgress":true,"parent":"#galleryTop"},"slideToClickedSlide":true}'>
+                      <div class="swiper-wrapper h-100">
+                      <?php
+                        // Caminho para a pasta com as fotos
+                        $pastaFotos = '../vendedor/uploads/produtos/fts/'.$res['id']."/";
 
-                        <div class="card-body position-relative">
-                          <h6>Produtos cadastrados<span class="badge badge-subtle-danger rounded-pill ms-2" hidden>-0.23%</span></h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-success" data-countup='{"endValue":10,"suffix":" UNI"}'>0</div>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-success" data-countup='{"endValue":10,"decimalPlaces":2,"prefix":"R$ "}'>0</div>
-                        </div>
+                        // Abrir a pasta
+                        if ($handle = opendir($pastaFotos)) {
+                            // Loop através dos arquivos da pasta
+                            while (false !== ($entry = readdir($handle))) {
+                                // Ignorar os arquivos "." e ".."
+                                if ($entry != "." && $entry != "..") {
+                                    // Gerar o caminho completo do arquivo
+                                    $caminhoFoto = $pastaFotos . $entry;
+                                    // Gerar o HTML para cada foto
+                                    echo '<div class="swiper-slide h-100"><img style="" class="rounded-1 object-fit-cover h-100 w-100" src="' . $caminhoFoto . '" alt="" /></div>';
+                                }
+                            }
+                            // Fechar a pasta
+                            closedir($handle);
+                        }
+                      ?>
+
+                      </div>
+                      <div class="swiper-nav">
+                        <div class="swiper-button-next swiper-button-white"></div>
+                        <div class="swiper-button-prev swiper-button-white"></div>
                       </div>
                     </div>
-                    <div class="col-sm-6">
-                      <div class="card overflow-hidden" style="min-width: 12rem">
-                        <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-2.png);">
-                        </div>
-                        <!--/.bg-holder-->
-
-                        <div class="card-body position-relative">
-                          <h6>Visitas</h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-info" data-countup='{"endValue":23,"decimalPlaces":0,"suffix":" UNI"}'>0</div>
-                          <h6>Leads</h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-info" data-countup='{"endValue":23,"decimalPlaces":0,"prefix":"UNI"}'>0</div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <h5><?php echo $res['nome']; ?></h5><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                  
+                  <p class="fs-10"></p>
+                  <h4 class="d-flex align-items-center"><span class="text-warning me-2">R$ <?php echo $res['valor']; ?></span><span class="me-1 fs-10 text-500"></h4>
+                  <p class="fs-10 mb-1"> <span></span><strong></strong></p>
+                  <p class="fs-10"><strong class="text-success"></strong></p>
+                  <p class="fs-10 mb-3"><a class="ms-2" href="#!"></a><a class="ms-1" href="#!"></a><a class="ms-1" href="#!"></a><a class="ms-1" href="#!"></a></p>
+                  <div class="row">
+                    <div class="col-auto pe-0">
+                      <div class="input-group input-group-sm" data-quantity="data-quantity">
+                        <button class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="minus">-</button>
+                        <input class="form-control text-center input-quantity input-spin-none" type="number" min="0" value="0" aria-label="Amount (to the nearest dollar)" style="max-width: 50px" />
+                        <button class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="plus">+</button>
+                      </div>
+                    </div>
+                    <div class="col-auto px-2 px-md-3"><a class="btn btn-sm btn-primary" href="#!"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Add To Cart</span></a></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="mt-4" >
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                      <li class="nav-item"><a class="nav-link active ps-0" id="description-tab" data-bs-toggle="tab" href="#tab-description" role="tab" aria-controls="tab-description" aria-selected="true">Description</a></li>
+                      <li class="nav-item" hidden><a class="nav-link px-2 px-md-3" id="specifications-tab" data-bs-toggle="tab" href="#tab-specifications" role="tab" aria-controls="tab-specifications" aria-selected="false">Specifications</a></li>
+                      <li class="nav-item" hidden><a class="nav-link px-2 px-md-3" id="reviews-tab" data-bs-toggle="tab" href="#tab-reviews" role="tab" aria-controls="tab-reviews" aria-selected="false">Reviews</a></li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="tab-description" role="tabpanel" aria-labelledby="description-tab">
+                        <div class="mt-3"><?php echo $res['descricao'] ?></div>
+                      </div>
+                      <div class="tab-pane fade" id="tab-specifications" role="tabpanel" aria-labelledby="specifications-tab">
+                        <table class="table fs-10 mt-3">
+                          <tbody>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Processor</td>
+                              <td>2.3GHz quad-core Intel Core i5,</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Memory</td>
+                              <td>8GB of 2133MHz LPDDR3 onboard memory</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Brand Name</td>
+                              <td>Apple</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Model</td>
+                              <td>Mac Book Pro</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Display</td>
+                              <td>13.3-inch (diagonal) LED-backlit display with IPS technology</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Storage</td>
+                              <td>512GB SSD</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Graphics</td>
+                              <td>Intel Iris Plus Graphics 655</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Weight</td>
+                              <td>7.15 pounds</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Finish</td>
+                              <td>Silver, Space Gray</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="tab-pane fade" id="tab-reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                        <div class="row mt-3">
+                          <div class="col-lg-6 mb-4 mb-lg-0">
+                            <div class="mb-1"><span class="fa fa-star text-warning fs-10"></span><span class="fa fa-star text-warning fs-10"></span><span class="fa fa-star text-warning fs-10"></span><span class="fa fa-star text-warning fs-10"></span><span class="fa fa-star text-warning fs-10"></span><span class="ms-3 text-1100 fw-semi-bold">Awesome support, great code 😍</span>
+                            </div>
+                            <p class="fs-10 mb-2 text-600">By Drik Smith • October 14, 2019</p>
+                            <p class="mb-0">You shouldn't need to read a review to see how nice and polished this theme is. So I'll tell you something you won't find in the demo. After the download I had a technical question, emailed the team and got a response right from the team CEO with helpful advice.</p>
+                            <hr class="my-4" />
+                            <div class="mb-1"><span class="fa fa-star text-warning fs-10"></span><span class="fa fa-star text-warning fs-10"></span><span class="fa fa-star text-warning fs-10"></span><span class="fa fa-star text-warning fs-10"></span><span class="fa fa-star-half-alt text-warning star-icon fs-10"></span><span class="ms-3 text-1100 fw-semi-bold">Outstanding Design, Awesome Support</span>
+                            </div>
+                            <p class="fs-10 mb-2 text-600">By Liane • December 14, 2019</p>
+                            <p class="mb-0">This really is an amazing template - from the style to the font - clean layout. SO worth the money! The demo pages show off what Bootstrap 4 can impressively do. Great template!! Support response is FAST and the team is amazing - communication is important.</p>
+                          </div>
+                          <div class="col-lg-6 ps-lg-5">
+                            <form>
+                              <h5 class="mb-3">Write your Review</h5>
+                              <div class="mb-3">
+                                <label class="form-label">Ratting: </label>
+                                <div class="d-block" data-rater='{"starSize":32,"step":0.5}'></div>
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label" for="formGroupNameInput">Name:</label>
+                                <input class="form-control" id="formGroupNameInput" type="text" />
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label" for="formGroupEmailInput">Email:</label>
+                                <input class="form-control" id="formGroupEmailInput" type="email" />
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label" for="formGrouptextareaInput">Review:</label>
+                                <textarea class="form-control" id="formGrouptextareaInput" rows="3"></textarea>
+                              </div>
+                              <button class="btn btn-primary" type="submit">Submit</button>
+                            </form>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                
               </div>
             </div>
-            
           </div>
-          <div class="row g-3 mb-3">
-            <div class="col-xxl-6 col-lg-12">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="row g-3 mb-3">
-                    <div class="col-sm-6">
-                      <div class="card overflow-hidden" style="min-width: 12rem">
-                        <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-1.png);">
-                        </div>
-                        <!--/.bg-holder-->
-
-                        <div class="card-body position-relative">
-                          <h6>Pagamentos Pendente<span class="badge badge-subtle-danger rounded-pill ms-2" hidden>-0.23%</span></h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning" data-countup='{"endValue":10,"suffix":" UNI"}'>0</div>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning" data-countup='{"endValue":10,"decimalPlaces":2,"prefix":" R$ "}'>0</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-sm-6">
-                      <div class="card overflow-hidden" style="min-width: 12rem">
-                        <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-2.png);">
-                        </div>
-                        <!--/.bg-holder-->
-
-                        <div class="card-body position-relative">
-                          <h6>Vendido</h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-info" data-countup='{"endValue":10,"decimalPlaces":0,"suffix":" UNI"}'>0</div>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-info" data-countup='{"endValue":23.434,"decimalPlaces":2,"prefix":"R$ "}'>0</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-            
-          </div>
-          
           <footer class="footer">
             <div class="row g-0 justify-content-between fs-10 mt-4 mb-3">
               <div class="col-12 col-sm-auto text-center">
@@ -896,63 +656,6 @@
                   <div class="col-sm-6"><a class="btn btn-outline-facebook btn-sm d-block w-100" href="#"><span class="fab fa-facebook-square me-2" data-fa-transform="grow-8"></span> facebook</a></div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="eventDetailsModal" tabindex="-1">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border"></div>
-          </div>
-        </div>
-        <div class="modal fade" id="addEventModal" tabindex="-1">
-          <div class="modal-dialog">
-            <div class="modal-content border">
-              <form id="addEventForm" autocomplete="off">
-                <div class="modal-header px-x1 bg-body-tertiary border-bottom-0">
-                  <h5 class="modal-title">Create Schedule</h5>
-                  <button class="btn-close me-n1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-x1">
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventTitle">Title</label>
-                    <input class="form-control" id="eventTitle" type="text" name="title" required="required" />
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventStartDate">Start Date</label>
-                    <input class="form-control datetimepicker" id="eventStartDate" type="text" required="required" name="startDate" placeholder="yyyy/mm/dd hh:mm" data-options='{"static":"true","enableTime":"true","dateFormat":"Y-m-d H:i"}' />
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventEndDate">End Date</label>
-                    <input class="form-control datetimepicker" id="eventEndDate" type="text" name="endDate" placeholder="yyyy/mm/dd hh:mm" data-options='{"static":"true","enableTime":"true","dateFormat":"Y-m-d H:i"}' />
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="eventAllDay" name="allDay" />
-                    <label class="form-check-label" for="eventAllDay">All Day
-                    </label>
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9">Schedule Meeting</label>
-                    <div><a class="btn badge-subtle-success btn-sm" href="#!"><span class="fas fa-video me-2"></span>Add video conference link</a></div>
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventDescription">Description</label>
-                    <textarea class="form-control" rows="3" name="description" id="eventDescription"></textarea>
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventLabel">Label</label>
-                    <select class="form-select" id="eventLabel" name="label">
-                      <option value="" selected="selected">None</option>
-                      <option value="primary">Business</option>
-                      <option value="danger">Important</option>
-                      <option value="success">Personal</option>
-                      <option value="warning">Must Attend</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="modal-footer d-flex justify-content-end align-items-center bg-body-tertiary border-0"><a class="me-3 text-600" href="../app/events/create-an-event.html">More options</a>
-                  <button class="btn btn-primary px-4" type="submit">Save</button>
-                </div>
-              </form>
             </div>
           </div>
         </div>
@@ -1082,15 +785,8 @@
     <script src="../vendors/bootstrap/bootstrap.min.js"></script>
     <script src="../vendors/anchorjs/anchor.min.js"></script>
     <script src="../vendors/is/is.min.js"></script>
-    <script src="../vendors/chart/chart.umd.js"></script>
-    <script src="../vendors/leaflet/leaflet.js"></script>
-    <script src="../vendors/leaflet.markercluster/leaflet.markercluster.js"></script>
-    <script src="../vendors/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js"></script>
-    <script src="../vendors/countup/countUp.umd.js"></script>
-    <script src="../vendors/echarts/echarts.min.js"></script>
-    <script src="../vendors/fullcalendar/index.global.min.js"></script>
-    <script src="../vendors/flatpickr/flatpickr.min.js"></script>
-    <script src="../vendors/dayjs/dayjs.min.js"></script>
+    <script src="../vendors/swiper/swiper-bundle.min.js"></script>
+    <script src="../vendors/rater-js/index.js"></script>
     <script src="../vendors/fontawesome/all.min.js"></script>
     <script src="../vendors/lodash/lodash.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>

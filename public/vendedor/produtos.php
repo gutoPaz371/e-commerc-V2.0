@@ -455,7 +455,8 @@ require_once "../../config/Crud.php";
                 </div>
                 <div class="col-auto ms-auto">
                   <div class="nav nav-pills nav-pills-falcon flex-grow-1 mt-2" role="tablist">
-                          <a href="./add-product.php" class="btn btn-success me-1 mb-1"><span class="fas fa-cart-plus"></span></a>
+                    <a href="./main.php" class="btn btn-info me-1 mb-1"><span class="fas fa-home"></span></a>
+                    <a href="./add-product.php" class="btn btn-success me-1 mb-1"><span class="fas fa-cart-plus"></span></a>
                   </div>
                 </div>
               </div>

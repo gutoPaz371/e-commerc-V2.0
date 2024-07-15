@@ -1,6 +1,3 @@
-<?php
-    require_once "./Session.php";
-?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en-US" dir="ltr">
 
@@ -33,10 +30,6 @@
     <!-- ===============================================-->
     <!--    Stylesheets-->
     <!-- ===============================================-->
-    <link href="../vendors/leaflet/leaflet.css" rel="stylesheet">
-    <link href="../vendors/leaflet.markercluster/MarkerCluster.css" rel="stylesheet">
-    <link href="../vendors/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet">
-    <link href="../vendors/flatpickr/flatpickr.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700%7cPoppins:300,400,500,600,700,800,900&amp;display=swap" rel="stylesheet">
     <link href="../vendors/simplebar/simplebar.min.css" rel="stylesheet">
@@ -77,330 +70,12 @@
             container.classList.add('container-fluid');
           }
         </script>
-        <nav class="navbar navbar-light navbar-vertical navbar-expand-xl">
-          <script>
-            var navbarStyle = localStorage.getItem("navbarStyle");
-            if (navbarStyle && navbarStyle !== 'transparent') {
-              document.querySelector('.navbar-vertical').classList.add(`navbar-${navbarStyle}`);
-            }
-          </script>
-          <div class="d-flex align-items-center">
-            <div class="toggle-icon-wrapper">
-
-              <button class="btn navbar-toggler-humburger-icon navbar-vertical-toggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
-
-            </div><a class="navbar-brand" href="./public/index.html">
-              <div class="d-flex align-items-center py-3"><img class="me-2" src="./public/assets/img/icons/spot-illustrations/falcon.png" alt="" width="40" /><span class="font-sans-serif text-primary">falcon</span>
-              </div>
-            </a>
-          </div>
-          <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
-            <div class="navbar-vertical-content scrollbar">
-              <ul class="navbar-nav flex-column mb-3" id="navbarVerticalNav">
-                
-                <li class="nav-item">
-                  <!-- label-->
-                  <div class="row navbar-vertical-label-wrapper mt-3 mb-2">
-                    <div class="col-auto navbar-vertical-label">App
-                    </div>
-                    <div class="col ps-0">
-                      <hr class="mb-0 navbar-vertical-divider" />
-                    </div>
-                  </div>
-                  <!-- parent pages--><a class="nav-link" href="./public/app/calendar.html" role="button">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-alt"></span></span><span class="nav-link-text ps-1">Calendar</span>
-                    </div>
-                  </a>
-                  <!-- parent pages--><a class="nav-link" href="./public/app/chat.html" role="button">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-comments"></span></span><span class="nav-link-text ps-1">Chat</span>
-                    </div>
-                  </a>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#email" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="email">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-envelope-open"></span></span><span class="nav-link-text ps-1">Email</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="email">
-                    <li class="nav-item"><a class="nav-link" href="./public/app/email/inbox.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Inbox</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/email/email-detail.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Email detail</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/email/compose.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Compose</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#events" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="events">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-day"></span></span><span class="nav-link-text ps-1">Events</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="events">
-                    <li class="nav-item"><a class="nav-link" href="./public/app/events/create-an-event.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Create an event</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/events/event-detail.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Event detail</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/events/event-list.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Event list</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#e-commerce" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="e-commerce">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-shopping-cart"></span></span><span class="nav-link-text ps-1">E commerce</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse show" id="e-commerce">
-                    <li class="nav-item"><a class="nav-link dropdown-indicator" href="#product" data-bs-toggle="collapse" aria-expanded="true" aria-controls="e-commerce">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Product</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                      <ul class="nav collapse show" id="product">
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/product/product-list.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Product list</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/product/product-grid.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Product grid</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link active" href="./public/app/e-commerce/product/product-details.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Product details</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/product/add-product.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Add product</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link dropdown-indicator" href="#orders" data-bs-toggle="collapse" aria-expanded="false" aria-controls="e-commerce">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Orders</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                      <ul class="nav collapse" id="orders">
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/orders/order-list.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Order list</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/orders/order-details.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Order details</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/customers.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Customers</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/customer-details.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Customer details</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/shopping-cart.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Shopping cart</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/checkout.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Checkout</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/billing.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Billing</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-commerce/invoice.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Invoice</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#e-learning" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="e-learning">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-graduation-cap"></span></span><span class="nav-link-text ps-1">E learning</span><span class="badge rounded-pill ms-2 badge-subtle-success">New</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="e-learning">
-                    <li class="nav-item"><a class="nav-link dropdown-indicator" href="#course" data-bs-toggle="collapse" aria-expanded="false" aria-controls="e-learning">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Course</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                      <ul class="nav collapse" id="course">
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/course/course-list.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Course list</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/course/course-grid.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Course grid</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/course/course-details.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Course details</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/course/create-a-course.html">
-                            <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Create a course</span>
-                            </div>
-                          </a>
-                          <!-- more inner pages-->
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/student-overview.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Student overview</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/e-learning/trainer-profile.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Trainer profile</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link" href="./public/app/kanban.html" role="button">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fab fa-trello"></span></span><span class="nav-link-text ps-1">Kanban</span>
-                    </div>
-                  </a>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#social" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="social">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-share-alt"></span></span><span class="nav-link-text ps-1">Social</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="social">
-                    <li class="nav-item"><a class="nav-link" href="./public/app/social/feed.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Feed</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/social/activity-log.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Activity log</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/social/notifications.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Notifications</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/social/followers.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Followers</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                  <!-- parent pages--><a class="nav-link dropdown-indicator" href="#support-desk" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="support-desk">
-                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-ticket-alt"></span></span><span class="nav-link-text ps-1">Support desk</span>
-                    </div>
-                  </a>
-                  <ul class="nav collapse" id="support-desk">
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/table-view.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Table view</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/card-view.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Card view</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/contacts.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Contacts</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/contact-details.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Contact details</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/tickets-preview.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Tickets preview</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/quick-links.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Quick links</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="./public/app/support-desk/reports.html">
-                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Reports</span>
-                        </div>
-                      </a>
-                      <!-- more inner pages-->
-                    </li>
-                  </ul>
-                </li>
-               
-              </ul>
-
-            </div>
-          </div>
-        </nav>
+        
         <div class="content">
           <nav class="navbar navbar-light navbar-glass navbar-top navbar-expand">
 
             <button class="btn navbar-toggler-humburger-icon navbar-toggler me-1 me-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
-            <a class="navbar-brand me-1 me-sm-3" href="#">
+            <a class="navbar-brand me-1 me-sm-3" href="../index.html">
               <div class="d-flex align-items-center"><img class="me-2" src="../assets/img/icons/spot-illustrations/falcon.png" alt="" width="40" /><span class="font-sans-serif text-primary">falcon</span>
               </div>
             </a>
@@ -740,104 +415,75 @@
 
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="../pages/user/settings.html">Settings</a>
-                    <a class="dropdown-item" href="./Sair.php">Logout</a>
+                    <a class="dropdown-item" href="../pages/authentication/card/logout.html">Logout</a>
                   </div>
                 </div>
               </li>
             </ul>
           </nav>
-          <div class="row g-3 mb-3">
-            <div class="col-xxl-6 col-lg-12">
-              <div class="card h-100">
-                <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-3.png);">
+          <div class="card">
+            <div class="card-header">
+              <div class="row justify-content-between">
+                <div class="col-md-auto">
+                  <h5 class="mb-3 mb-md-0">Shopping Cart (7 Items)</h5>
                 </div>
-                <!--/.bg-holder-->
-
-                
-                
+                <div class="col-md-auto"><a class="btn btn-sm btn-outline-secondary border-300 me-2 shadow-none" href="../app/e-commerce/product/product-list.html"> <span class="fas fa-chevron-left me-1" data-fa-transform="shrink-4"></span>Continue Shopping</a><a class="btn btn-sm btn-primary" href="../app/e-commerce/checkout.html">Checkout</a></div>
               </div>
             </div>
-           
-            
-          </div>
-          <div class="row g-3 mb-3">
-            <div class="col-xxl-6 col-lg-12">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="row g-3 mb-3">
-                    <div class="col-sm-6">
-                      <div class="card overflow-hidden" style="min-width: 12rem">
-                        <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-1.png);">
-                        </div>
-                        <!--/.bg-holder-->
-
-                        <div class="card-body position-relative">
-                          <h6>Produtos cadastrados<span class="badge badge-subtle-danger rounded-pill ms-2" hidden>-0.23%</span></h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-success" data-countup='{"endValue":10,"suffix":" UNI"}'>0</div>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-success" data-countup='{"endValue":10,"decimalPlaces":2,"prefix":"R$ "}'>0</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-sm-6">
-                      <div class="card overflow-hidden" style="min-width: 12rem">
-                        <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-2.png);">
-                        </div>
-                        <!--/.bg-holder-->
-
-                        <div class="card-body position-relative">
-                          <h6>Visitas</h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-info" data-countup='{"endValue":23,"decimalPlaces":0,"suffix":" UNI"}'>0</div>
-                          <h6>Leads</h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-info" data-countup='{"endValue":23,"decimalPlaces":0,"prefix":"UNI"}'>0</div>
-                        </div>
-                      </div>
+            <div class="card-body p-0">
+              <div class="row gx-x1 mx-0 bg-200 text-900 fs-10 fw-semi-bold">
+                <div class="col-9 col-md-8 py-2 px-x1">Name</div>
+                <div class="col-3 col-md-4 px-x1">
+                  <div class="row">
+                    <div class="col-md-8 py-2 d-none d-md-block text-center">Quantity</div>
+                    <div class="col-12 col-md-4 text-end py-2">Price</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row gx-x1 mx-0 align-items-center border-bottom border-200">
+                <div class="col-8 py-3 px-x1">
+                  <div class="d-flex align-items-center"><a href="../app/e-commerce/product/product-details.html"><img class="img-fluid rounded-1 me-3 d-none d-md-block" src="../assets/img/products/1.jpg" alt="" width="60" /></a>
+                    <div class="flex-1">
+                      <h5 class="fs-9"><a class="text-900" href="../app/e-commerce/product/product-details.html">Apple MacBook Pro 15&quot; Z0V20008N: 2.9GHz 6-core 8th-Gen Intel Core i9, 32GB RAM</a></h5>
+                      <div class="fs-11 fs-md--1"><a class="text-danger" href="#!">Remove</a></div>
                     </div>
                   </div>
                 </div>
-                
-              </div>
-            </div>
-            
-          </div>
-          <div class="row g-3 mb-3">
-            <div class="col-xxl-6 col-lg-12">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="row g-3 mb-3">
-                    <div class="col-sm-6">
-                      <div class="card overflow-hidden" style="min-width: 12rem">
-                        <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-1.png);">
-                        </div>
-                        <!--/.bg-holder-->
-
-                        <div class="card-body position-relative">
-                          <h6>Pagamentos Pendente<span class="badge badge-subtle-danger rounded-pill ms-2" hidden>-0.23%</span></h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning" data-countup='{"endValue":10,"suffix":" UNI"}'>0</div>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-warning" data-countup='{"endValue":10,"decimalPlaces":2,"prefix":" R$ "}'>0</div>
+                <div class="col-4 py-3 px-x1">
+                  <div class="row align-items-center">
+                    <div class="col-md-8 d-flex justify-content-end justify-content-md-center order-1 order-md-0">
+                      <div>
+                        <div class="input-group input-group-sm flex-nowrap" data-quantity="data-quantity">
+                          <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none" data-type="minus">-</button>
+                          <input class="form-control text-center px-2 input-spin-none" type="number" min="1" value="1" aria-label="Amount (to the nearest dollar)" style="width: 50px" />
+                          <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none" data-type="plus">+</button>
                         </div>
                       </div>
                     </div>
-                    <div class="col-sm-6">
-                      <div class="card overflow-hidden" style="min-width: 12rem">
-                        <div class="bg-holder bg-card" style="background-image:url(../assets/img/icons/spot-illustrations/corner-2.png);">
-                        </div>
-                        <!--/.bg-holder-->
-
-                        <div class="card-body position-relative">
-                          <h6>Vendido</h6>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-info" data-countup='{"endValue":10,"decimalPlaces":0,"suffix":" UNI"}'>0</div>
-                          <div class="display-4 fs-5 mb-2 fw-normal font-sans-serif text-info" data-countup='{"endValue":23.434,"decimalPlaces":2,"prefix":"R$ "}'>0</div>
-                        </div>
-                      </div>
-                    </div>
+                    <div class="col-md-4 text-end ps-0 order-0 order-md-1 mb-2 mb-md-0 text-600">$1292</div>
                   </div>
                 </div>
-                
+              </div>
+             
+              <div class="row fw-bold gx-x1 mx-0">
+                <div class="col-9 col-md-8 py-2 px-x1 text-end text-900">Total</div>
+                <div class="col px-0">
+                  <div class="row gx-x1 mx-0">
+                    <div class="col-md-8 py-2 px-x1 d-none d-md-block text-center">7 (items)</div>
+                    <div class="col-12 col-md-4 text-end py-2 px-x1">$8516</div>
+                  </div>
+                </div>
               </div>
             </div>
-            
+            <div class="card-footer bg-body-tertiary d-flex justify-content-end">
+              <form class="me-3">
+                <div class="input-group input-group-sm">
+                  <input class="form-control" type="text" placeholder="Promocode" />
+                  <button class="btn btn-outline-secondary border-300 btn-sm shadow-none" type="submit">Apply</button>
+                </div>
+              </form><a class="btn btn-sm btn-primary" href="../app/e-commerce/checkout.html">Checkout</a>
+            </div>
           </div>
-          
           <footer class="footer">
             <div class="row g-0 justify-content-between fs-10 mt-4 mb-3">
               <div class="col-12 col-sm-auto text-center">
@@ -896,63 +542,6 @@
                   <div class="col-sm-6"><a class="btn btn-outline-facebook btn-sm d-block w-100" href="#"><span class="fab fa-facebook-square me-2" data-fa-transform="grow-8"></span> facebook</a></div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="eventDetailsModal" tabindex="-1">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border"></div>
-          </div>
-        </div>
-        <div class="modal fade" id="addEventModal" tabindex="-1">
-          <div class="modal-dialog">
-            <div class="modal-content border">
-              <form id="addEventForm" autocomplete="off">
-                <div class="modal-header px-x1 bg-body-tertiary border-bottom-0">
-                  <h5 class="modal-title">Create Schedule</h5>
-                  <button class="btn-close me-n1" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-x1">
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventTitle">Title</label>
-                    <input class="form-control" id="eventTitle" type="text" name="title" required="required" />
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventStartDate">Start Date</label>
-                    <input class="form-control datetimepicker" id="eventStartDate" type="text" required="required" name="startDate" placeholder="yyyy/mm/dd hh:mm" data-options='{"static":"true","enableTime":"true","dateFormat":"Y-m-d H:i"}' />
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventEndDate">End Date</label>
-                    <input class="form-control datetimepicker" id="eventEndDate" type="text" name="endDate" placeholder="yyyy/mm/dd hh:mm" data-options='{"static":"true","enableTime":"true","dateFormat":"Y-m-d H:i"}' />
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="eventAllDay" name="allDay" />
-                    <label class="form-check-label" for="eventAllDay">All Day
-                    </label>
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9">Schedule Meeting</label>
-                    <div><a class="btn badge-subtle-success btn-sm" href="#!"><span class="fas fa-video me-2"></span>Add video conference link</a></div>
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventDescription">Description</label>
-                    <textarea class="form-control" rows="3" name="description" id="eventDescription"></textarea>
-                  </div>
-                  <div class="mb-3">
-                    <label class="fs-9" for="eventLabel">Label</label>
-                    <select class="form-select" id="eventLabel" name="label">
-                      <option value="" selected="selected">None</option>
-                      <option value="primary">Business</option>
-                      <option value="danger">Important</option>
-                      <option value="success">Personal</option>
-                      <option value="warning">Must Attend</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="modal-footer d-flex justify-content-end align-items-center bg-body-tertiary border-0"><a class="me-3 text-600" href="../app/events/create-an-event.html">More options</a>
-                  <button class="btn btn-primary px-4" type="submit">Save</button>
-                </div>
-              </form>
             </div>
           </div>
         </div>
@@ -1082,15 +671,6 @@
     <script src="../vendors/bootstrap/bootstrap.min.js"></script>
     <script src="../vendors/anchorjs/anchor.min.js"></script>
     <script src="../vendors/is/is.min.js"></script>
-    <script src="../vendors/chart/chart.umd.js"></script>
-    <script src="../vendors/leaflet/leaflet.js"></script>
-    <script src="../vendors/leaflet.markercluster/leaflet.markercluster.js"></script>
-    <script src="../vendors/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js"></script>
-    <script src="../vendors/countup/countUp.umd.js"></script>
-    <script src="../vendors/echarts/echarts.min.js"></script>
-    <script src="../vendors/fullcalendar/index.global.min.js"></script>
-    <script src="../vendors/flatpickr/flatpickr.min.js"></script>
-    <script src="../vendors/dayjs/dayjs.min.js"></script>
     <script src="../vendors/fontawesome/all.min.js"></script>
     <script src="../vendors/lodash/lodash.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
