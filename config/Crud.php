@@ -57,6 +57,12 @@
             $stmt=$this->conn->prepare($sql);
             $stmt->bind_param("sssii",$this->nome,$this->valor,$this->desc,$this->status,$this->id);
             if($stmt->execute())return true;return false;
+        }
+        public function selectById($id){
+            $sql="SELECT * FROM produtos WHERE id=?";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param("i",$id);
+            if($stmt->execute())return $stmt->get_result();return false;
         }        
         public function selectAll(){
             $sql="SELECT * FROM produtos";
@@ -186,35 +192,51 @@
         }
     }
 
-    class Carrinho{
+    class Carrinho{        
         private $conn;
         public $id;
         public $id_cliente;
+        public $id_vendedor;
         public $id_produto;
-        public $valor_carrinho;
+        public $id_pagamento;
+        public $valor;
+        public $quantidade;
 
         public function __construct($db)
         {
-            $this->conn=$db;   
+            $this->conn=$db;
         }
-
         public function insert(){
-            $sql="INSERT INTO carrinho (id_cliente,id_produto,valor_carrinho) VALUES (?,?,?)";
+            $sql="INSERT INTO carrinho(id_cliente,id_vendedor,id_produto,id_pagamento,valor,quantidade)VALUES(?,?,?,?,?,?)";
             $stmt=$this->conn->prepare($sql);
-            $stmt->bind_param("iis",$this->id_cliente,$this->id_produto,$this->valor_carrinho);
+            $stmt->bind_param("iiissi",$this->id_cliente,$this->id_vendedor,$this->id_produto,$this->id_pagamento,$this->valor,$this->quantidade);
             if($stmt->execute())return true;return false;
         }
         public function update(){
-            $sql="UPDATE carrinho SET id_cliente=?,id_produto=?,valor_carrinho=? WHERE id=?";
+            $sql="UPDATE carrinho SET valor=?,quantidade=? WHERE id=?";
             $stmt=$this->conn->prepare($sql);
-            $stmt->bind_param("iisi",$this->id_cliente,$this->id_produto,$this->valor_carrinho,$this->id);
-            if($stmt->execute())return true; return false;
+            $stmt->bind_param("sii",$this->valor,$this->quantidade,$this->id);
+            if($stmt->execute())return true;return false;
+
         }
         public function selectAll(){
             $sql="SELECT * FROM carrinho";
             $stmt=$this->conn->prepare($sql);
             if($stmt->execute())return $stmt->get_result();return false;
         }
+        public function selectById($id){
+            $sql="SELECT * FROM carrinho WHERE id=?";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param("i",$id);
+            if($stmt->execute())return $stmt->get_result();return false;
+        }
+        public function compare($id_cliente,$id_produto){
+            $sql="SELECT * FROM carrinho WHERE id_cliente=? AND id_produto=?";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param("ii",$id_cliente,$id_produto);
+            if($stmt->execute())return $stmt->get_result()->fetch_assoc();return false;
+        }
+
     }
 
     class Avaliacoes{
@@ -293,52 +315,8 @@
         }
     }
 
-    class Pedidos{
-        private $conn;
-        public $id;
-        public $id_produto;
-        public $id_cliente;
-        public $id_vendedor;
-        public $valor_compra;
+    
 
-        public function __construct($db)
-        {
-            $this->conn=$db;
-        }           
-        public function insert(){
-            $sql="INSERT INTO pedidos (id_produto,id_cliente,id_vendedor)
-            VALUES (?,?,?,?,?,?)";
-            $stmt=$this->conn->prepare($sql);
-            $stmt->bind_param("iiiiis",$this->id_produto,$this->id_cliente,$this->id_vendedor,$this->valor_compra);
-            if($stmt->execute())return true;return false;
-        }
-        public function update(){
-            $sql="UPDATE pedidos SET id_produto=?,id_cliente=?,id_vendedor=? WHERE id=?";
-            $stmt=$this->conn->prepare($sql);
-            $stmt->bind_param("iiiisi",$this->id_produto,$this->id_cliente,$this->id_vendedor,$this->id);
-            if($stmt->execute())return true;return false;
-
-        }
-        public function selectAll(){
-            $sql="SELECT * FROM pedidos";
-            $stmt=$this->conn->prepare($sql);
-            if($stmt->execute())return $stmt->get_result();return false;
-        }
-        public function delete(){
-            $sql="DELETE FROM pedidos WHERE id=?";
-            $stmt=$this->conn->prepare($sql);
-            $stmt->bind_param("i",$this->id);
-            if($stmt->execute())return true;return false;
-        }
-        public function getPedidos(){
-            $sql="  SELECT pedidos.id AS id, cliente.nome AS nome, pedidos.valor_compra AS valor, pedidos.status AS status, vendedor.nome AS vendedor
-                    FROM vendedor INNER JOIN pedidos ON vendedor.id=pedidos.id_vendedor
-                    INNER JOIN cliente ON pedidos.id_cliente=cliente.id WHERE vendedor.id=?
-                ";
-            $stmt=$this->conn->prepare($sql);
-            $stmt->bind_param("i",$this->id_vendedor);
-            if($stmt->execute())return $stmt->get_result();return false;
-        }              
-    }
+    
 
     ?>

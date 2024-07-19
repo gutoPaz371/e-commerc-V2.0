@@ -1,11 +1,14 @@
 <?php
-function consultar(){
+if(!isset($_GET['id']) || !isset($_GET['token'])){
+  echo 'Pagina Nao encontrada!!!';exit();}
+//arrumar cessao para nao replicar errado no carrinho
+function consultar($id){
   require_once "../../config/Database.php";
   require_once "../../config/Crud.php";
   $data = new Database();
   $db = $data->getConnection();
   $prods = new Produto($db);
-  $res = $prods->selectAllAtive()->fetch_assoc();
+  $res = $prods->selectById($id)->fetch_assoc();
   return $res;
 }
 if(isset($_GET['id']) && isset($_GET['token'])){
@@ -13,7 +16,7 @@ if(isset($_GET['id']) && isset($_GET['token'])){
   if(strlen($id)!=0 && strlen($token)!=0){
     $auth=md5(md5($id).md5($id));
     if($token==$auth){
-      $res=consultar();
+      $res=consultar($id);
     }else{
       header("HTTP 404");
       echo "Pagina Não Encontrada!!!";
@@ -482,22 +485,28 @@ if(isset($_GET['id']) && isset($_GET['token'])){
                   </div>
                 </div>
                 <div class="col-lg-6">
-                  <h5><?php echo $res['nome']; ?></h5><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                  <h5><?php echo $res['nome']; ?></h5><br><br><br><br><br>
                   
-                  <p class="fs-10"></p>
+                  <p class="fs-10"><h7>[texto_venda]</h7></p>
+                  <br><br><br><br><br><br><br>
                   <h4 class="d-flex align-items-center"><span class="text-warning me-2">R$ <?php echo $res['valor']; ?></span><span class="me-1 fs-10 text-500"></h4>
                   <p class="fs-10 mb-1"> <span></span><strong></strong></p>
                   <p class="fs-10"><strong class="text-success"></strong></p>
                   <p class="fs-10 mb-3"><a class="ms-2" href="#!"></a><a class="ms-1" href="#!"></a><a class="ms-1" href="#!"></a><a class="ms-1" href="#!"></a></p>
+                  <form action="./Carrinho.php?id=<?php echo $_GET['id'].'&token='.$_GET['token']; ?>" method="post">
+                  <input type="text" name="idProd" value="<?php echo $res['id']; ?>" hidden >
+                  <input type="text" name="valor" value="<?php echo $res['valor']; ?>" hidden >
+                  <input type="text" name="idUser" value="<?php echo 1; ?>" hidden>
                   <div class="row">
                     <div class="col-auto pe-0">
                       <div class="input-group input-group-sm" data-quantity="data-quantity">
-                        <button class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="minus">-</button>
-                        <input class="form-control text-center input-quantity input-spin-none" type="number" min="0" value="0" aria-label="Amount (to the nearest dollar)" style="max-width: 50px" />
-                        <button class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="plus">+</button>
+                        <a class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="minus">-</a>
+                        <input name="qnt" class="form-control text-center input-quantity input-spin-none" type="number" min="1" value="1" aria-label="Amount (to the nearest dollar)" style="max-width: 50px" />
+                        <a class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="plus">+</a>
                       </div>
                     </div>
-                    <div class="col-auto px-2 px-md-3"><a class="btn btn-sm btn-primary" href="#!"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Add To Cart</span></a></div>
+                      <div class="col-auto px-2 px-md-3"><button class="btn btn-sm btn-primary" type="submit"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Adicionar ao carrinho</span></button></div>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -505,7 +514,7 @@ if(isset($_GET['id']) && isset($_GET['token'])){
                 <div class="col-12">
                   <div class="mt-4" >
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
-                      <li class="nav-item"><a class="nav-link active ps-0" id="description-tab" data-bs-toggle="tab" href="#tab-description" role="tab" aria-controls="tab-description" aria-selected="true">Description</a></li>
+                      <li class="nav-item"><a class="nav-link active ps-0" id="description-tab" data-bs-toggle="tab" href="#tab-description" role="tab" aria-controls="tab-description" aria-selected="true"></a></li>
                       <li class="nav-item" hidden><a class="nav-link px-2 px-md-3" id="specifications-tab" data-bs-toggle="tab" href="#tab-specifications" role="tab" aria-controls="tab-specifications" aria-selected="false">Specifications</a></li>
                       <li class="nav-item" hidden><a class="nav-link px-2 px-md-3" id="reviews-tab" data-bs-toggle="tab" href="#tab-reviews" role="tab" aria-controls="tab-reviews" aria-selected="false">Reviews</a></li>
                     </ul>
