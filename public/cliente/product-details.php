@@ -1,4 +1,5 @@
 <?php
+require_once "./Session.php";
 if(!isset($_GET['id']) || !isset($_GET['token'])){
   echo 'Pagina Nao encontrada!!!';exit();}
 //arrumar cessao para nao replicar errado no carrinho

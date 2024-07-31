@@ -8,6 +8,12 @@
         {
             $this->conn=$db;            
         }
+        public function insert(){
+            $sql="INSERT INTO adm (user,pass) VALUES (?,?)";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param("ss",$this->user,$this->pass);
+            if($stmt->execute())return true;return false;
+        }
         public function fazerLogin(){
             $sql="SELECT * FROM adm WHERE user = ?";
             $stmt=$this->conn->prepare($sql);
@@ -230,11 +236,68 @@
             $stmt->bind_param("i",$id);
             if($stmt->execute())return $stmt->get_result();return false;
         }
+        public function selectByIdClient($id){
+            $sql="SELECT * FROM carrinho WHERE id_cliente=?";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param("i",$id);
+            if($stmt->execute())return $stmt->get_result();return false;
+        }
         public function compare($id_cliente,$id_produto){
             $sql="SELECT * FROM carrinho WHERE id_cliente=? AND id_produto=?";
             $stmt=$this->conn->prepare($sql);
             $stmt->bind_param("ii",$id_cliente,$id_produto);
             if($stmt->execute())return $stmt->get_result()->fetch_assoc();return false;
+        }
+        private function getClientName($id){
+            $sql="SELECT nome FROM cliente WHERE id=?";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param("i",$id);
+            if($stmt->execute())return $stmt->get_result()->fetch_assoc()['nome'];return false;
+        }
+        public function getCars(){
+            
+            $sql="SELECT 
+                    id_cliente as idC, SUM(valor) AS total_valor, SUM(quantidade) AS quantidade_total
+                FROM 
+                    carrinho
+                GROUP BY 
+                    id_cliente;
+                "
+            ;
+            $stmt=$this->conn->prepare($sql);
+            if($stmt->execute()){
+                $res=$stmt->get_result();
+                $cont=0;
+                $dados=array(
+                    "nome"  => "",
+                    "valor" => "",
+                    "qnt"   => ""
+                );
+                while($row = $res->fetch_array()){
+                    
+                    $dados[$cont]['nome']=$this->getClientName($row['idC']);
+                    $dados[$cont]['valor']=$row['total_valor'];
+                    $dados[$cont]['qnt']=$row['quantidade_total'];
+                    $cont=$cont+1;                    
+                }return $dados;
+            }else return false;
+        }
+        public function getCarsByIdClient($id){
+            $sql="SELECT 
+                carrinho.id AS id,
+                carrinho.valor AS valor,
+                produtos.nome AS Pnome,
+                produtos.id AS idP,
+                carrinho.quantidade AS qnt,
+                SUM(carrinho.valor) OVER() AS valor_total,
+                SUM(carrinho.quantidade) OVER() AS qnt_total
+                FROM carrinho INNER JOIN produtos
+                ON carrinho.id_produto=produtos.id
+                WHERE carrinho.id_cliente=?
+            ";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param("s",$id);
+            if($stmt->execute())return $stmt->get_result();return false;
         }
 
     }

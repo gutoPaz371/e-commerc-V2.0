@@ -23,8 +23,8 @@
     
         return $token;
     }
-    
-    $idCliente=2;
+    session_start();
+    $idCliente=$_SESSION['id'];
     $idP=$_POST['idProd'];
     $v=$_POST['valor'];
     $qnt=$_POST['qnt'];
@@ -41,7 +41,7 @@
         $car->id=$res['id'];
         $car->quantidade=intval($res['quantidade'])+$qnt;
         $car->valor=(intval(str_replace(",",".",$res['valor']))/$res['quantidade'])*$car->quantidade;
-        if($car->update())header('location: ./product-details.php');return false;
+        if($car->update())header('location: ./product-details.php?id='.$_GET['id'].'&token='.$_GET['token']);return false;
     }
     
     else{
@@ -49,8 +49,8 @@
         $car->id_produto=$idP;
         $car->valor=$v;
         $car->quantidade=$qnt;
-        $car->insert();
-
+        if($car->insert())header('location: ./product-details.php?id='.$_GET['id'].'&token='.$_GET['token']);return false;
+        
 
     }
        
