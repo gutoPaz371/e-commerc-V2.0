@@ -2,6 +2,7 @@
 require_once "./Session.php";
 require_once "../../config/Database.php";
 require_once "../../config/Crud.php";
+var_dump($_POST);
 function salveImg($id){
   // Diretório onde as imagens serão salvas
   $targetDir = "uploads/produtos/fts/$id/";
@@ -148,7 +149,7 @@ elseif($_POST['token']!=md5(md5($_POST['id']).md5($_POST['id']))){
 $data = new Database();
 $db = $data->getConnection();
 $p = new Produto($db);
-$res=$p->selectAll()->fetch_assoc();
+$res=$p->selectById($_POST['id'])->fetch_assoc();
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en-US" dir="ltr">
@@ -585,7 +586,7 @@ $res=$p->selectAll()->fetch_assoc();
                 
 
                 <form action="#" method="post" enctype="multipart/form-data">
-                  <input value="<?php echo $res['id']; ?>" name="idP" hidden>
+                  <input value="<?php echo $res['id']; ?>" name="idP" >
                 <div class="col-auto"><input value="1" name="post_editProduto" hidden>
                   <a class="btn btn-link text-secondary p-0 me-3 fw-medium" role="div" href="./produtos.php">Discartar</a>
                   <button class="btn btn-success" type="submit">Salvar </button>

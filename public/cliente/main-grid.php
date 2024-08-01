@@ -431,7 +431,7 @@ function findImage($id) {
 
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="../pages/user/settings.html">Settings</a>
-                    <a class="dropdown-item" href="../pages/authentication/card/logout.html">Logout</a>
+                    <a class="dropdown-item" href="./Sair.php">Logout</a>
                   </div>
                 </div>
               </li>
@@ -441,7 +441,7 @@ function findImage($id) {
             <div class="card-body">
               <div class="row flex-between-center">
                 <div class="col-sm-auto mb-2 mb-sm-0">
-                  <h6 class="mb-0"></h6>
+                  <h1 class="mb-0"></h1>
                 </div>
                 <div class="col-sm-auto">
                   <div class="row gx-2 align-items-center">
@@ -486,7 +486,7 @@ function findImage($id) {
                     <div class="d-flex flex-between-center px-3">
                       <div hidden><span class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span><span class="fa fa-star text-300"></span><span class="ms-1">(8)</span>
                       </div>
-                      <div><a class="btn btn-sm btn-falcon-default" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Adicionar ao carrinho"><span class="fas fa-cart-plus"></span></a></div>
+                      <div hidden><a class="btn btn-sm btn-falcon-default" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Adicionar ao carrinho"><span class="fas fa-cart-plus"></span></a></div>
                     </div>
                   </div>
                 </div>

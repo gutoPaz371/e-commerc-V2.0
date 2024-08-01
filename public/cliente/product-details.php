@@ -449,6 +449,7 @@ if(isset($_GET['id']) && isset($_GET['token'])){
               </li>
             </ul>
           </nav>
+          <a href="./main-grid.php" class="btn btn-falcon-warning me-1 mb-1" type="button">Voltar</a>
           <div class="card">
             <div class="card-body">
               <div class="row">

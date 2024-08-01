@@ -425,7 +425,7 @@ $res=$car->getCarsByIdClient($_SESSION['id']);
 
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="../pages/user/settings.html">Settings</a>
-                    <a class="dropdown-item" href="../pages/authentication/card/logout.html">Logout</a>
+                    <a class="dropdown-item" href="./Sair.php">Logout</a>
                   </div>
                 </div>
               </li>
@@ -445,6 +445,7 @@ $res=$car->getCarsByIdClient($_SESSION['id']);
               </div>
 
               <?php
+              $valor=0;
                 while($row=$res->fetch_array()){
                   ?>
                     <div class="row gx-x1 mx-0 align-items-center border-bottom border-200">
@@ -467,12 +468,12 @@ $res=$car->getCarsByIdClient($_SESSION['id']);
                               </div>
                             </div>
                           </div>
-                          <div class="col-md-4 text-end ps-0 order-0 order-md-1 mb-2 mb-md-0 text-600"><?php echo "R$ ".$row['valor'] ?></div>
+                          <div class="col-md-4 text-end ps-0 order-0 order-md-1 mb-2 mb-md-0 text-600"><?php echo "R$ ".$row['valor']*$row['qnt']; ?></div>
                         </div>
                       </div>
                     </div>
                   <?php
-                  $qnt=$row['qnt_total'];$valor=$row['valor_total'];
+                  $qnt=$row['qnt_total'];$valor=$valor+$row['valor']*$row['qnt'];
                 }
               ?>
                 

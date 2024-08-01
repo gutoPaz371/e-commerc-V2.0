@@ -107,6 +107,10 @@
                       <hr class="mb-0 navbar-vertical-divider" />
                     </div>
                   </div>
+                  <!-- parent pages--><a class="nav-link" href="./produtos.php" role="button">
+                  <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-shopping-basket"></span></span><span class="nav-link-text ps-1">Produtos</span>
+                    </div>
+                  </a>
                   <!-- parent pages--><a class="nav-link" href="./pedidos.php" role="button">
                     <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-file-alt"></span></span><span class="nav-link-text ps-1">Pedidos</span>
                     </div>
