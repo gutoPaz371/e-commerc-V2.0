@@ -3,6 +3,7 @@ def gerar_link_pagamento():
     sdk = mercadopago.SDK("TEST-5706462506921008-050300-e63cf13226a57e8fefac981aec297674-540037296")
 
     payment_data = {
+        #"external_reference": "1643827245",
         "items": [
             {
             "id": 1,
@@ -22,4 +23,5 @@ def gerar_link_pagamento():
     result = sdk.preference().create(payment_data)
     payment = result["response"]
     return payment['init_point']
+
     

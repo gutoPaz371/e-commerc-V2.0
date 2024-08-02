@@ -1,12 +1,29 @@
 <?php
+require_once "./Session.php";
 require_once "../../config/Database.php";
 require_once "../../config/Crud.php";
+
 $data = new Database();
 $db = $data->getConnection();
 $car = new Carrinho($db);
-session_start();
 $res=$car->getCarsByIdClient($_SESSION['id']);
-
+if($_SERVER['REQUEST_METHOD']==='POST'){
+  switch($_POST['OP']){
+    case 0:
+      if($_POST['qnt']>1){
+        $car->sub($_POST['id']);
+        header('location: ./shopping-cart.php');
+        break;
+      }else{
+        header('location: ./shopping-cart.php');
+        break;
+      }
+    case 1:
+      $car->sum($_POST['id']);
+      header('location: ./shopping-cart.php');
+      break;
+  }
+}
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en-US" dir="ltr">
@@ -444,9 +461,18 @@ $res=$car->getCarsByIdClient($_SESSION['id']);
                 </div>
               </div>
 
-              <?php
-              $valor=0;
+              <?php              
+              $valor=0;$qnt=0;
+              $dados_checkout=[];
                 while($row=$res->fetch_array()){
+                  array_push($dados_checkout,array(
+                    'itens' => array(
+                      'id' => $row['idP'],
+                      'nome' => $row['Pnome'],
+                      'valor' => $row['valor'],
+                      'qnt' => $row['qnt']
+                    )
+                  ))
                   ?>
                     <div class="row gx-x1 mx-0 align-items-center border-bottom border-200">
                       <div class="col-8 py-3 px-x1">
@@ -462,19 +488,39 @@ $res=$car->getCarsByIdClient($_SESSION['id']);
                           <div class="col-md-8 d-flex justify-content-end justify-content-md-center order-1 order-md-0">
                             <div>
                               <div class="input-group input-group-sm flex-nowrap" data-quantity="data-quantity">
-                                <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none" data-type="minus">-</button>
+                                <form action="#" method="post">
+                                  <input name="OP" value="0" hidden>
+                                  <input name="qnt" value="<?php echo $row['qnt']; ?>" hidden>
+                                  <input name="id" value="<?php echo $row['id'] ?>" hidden>
+                                  <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none" data-type="minus">-</button>
+                                </form>
                                 <input class="form-control text-center px-2 input-spin-none" type="number" min="1" value="<?php echo $row['qnt']; ?>" aria-label="Amount (to the nearest dollar)" style="width: 50px" />
-                                <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none" data-type="plus">+</button>
+                                <form action="#" method="post">
+                                  <input name="OP" value="1" hidden>
+                                  <input name="qnt" value="<?php echo $row['qnt']; ?>" hidden>
+                                  <input name="id" value="<?php echo $row['id'] ?>" hidden>
+                                  <button class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none" data-type="plus">+</button>
+                                </form>
                               </div>
                             </div>
                           </div>
-                          <div class="col-md-4 text-end ps-0 order-0 order-md-1 mb-2 mb-md-0 text-600"><?php echo "R$ ".$row['valor']*$row['qnt']; ?></div>
+                          <div class="col-md-4 text-end ps-0 order-0 order-md-1 mb-2 mb-md-0 text-600"><?php echo "R$ ".$row['valor']; ?></div>
                         </div>
                       </div>
                     </div>
                   <?php
-                  $qnt=$row['qnt_total'];$valor=$valor+$row['valor']*$row['qnt'];
+                  $qnt=$row['qnt_total'];
+                  $valor=$row['valor_total'];
+                  $idC=$row['idC'];
                 }
+                array_push($dados_checkout,array(
+                  'resume' => array(
+                    'valor-total' =>100
+                  )
+                ));
+                
+                // print_r($dados_checkout[count($dados_checkout) - 1]['resume']['valor-total']);
+                
               ?>
                 
               
@@ -490,12 +536,13 @@ $res=$car->getCarsByIdClient($_SESSION['id']);
               </div>
             </div>
             <div class="card-footer bg-body-tertiary d-flex justify-content-end">
-              <form class="me-3">
-                <div class="input-group input-group-sm">
-                  <input class="form-control" type="text" placeholder="Promocode" />
-                  <button class="btn btn-outline-secondary border-300 btn-sm shadow-none" type="submit">Apply</button>
-                </div>
-              </form><a class="btn btn-sm btn-primary" href="../app/e-commerce/checkout.html">Checkout</a>
+              <form action="./checkout.php" method="post">
+                <input name="diC" value="<?php echo $_SESSION['id']; ?>" hidden>
+                <textarea name="dados-json" id="" hidden>
+                  <?php echo json_encode($dados_checkout); ?>
+                </textarea>              
+                <button class="btn btn-sm btn-primary" type="submit">Checkout</button>
+              </form>
             </div>
           </div>
           <footer class="footer">
@@ -520,7 +567,7 @@ $res=$car->getCarsByIdClient($_SESSION['id']);
                 <button class="btn-close position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body py-4 px-5">
-                <form>
+                
                   <div class="mb-3">
                     <label class="form-label" for="modal-auth-name">Name</label>
                     <input class="form-control" type="text" autocomplete="on" id="modal-auth-name" />
@@ -546,7 +593,7 @@ $res=$car->getCarsByIdClient($_SESSION['id']);
                   <div class="mb-3">
                     <button class="btn btn-primary d-block w-100 mt-3" type="submit" name="submit">Register</button>
                   </div>
-                </form>
+                
                 <div class="position-relative mt-5">
                   <hr />
                   <div class="divider-content-center">or register with</div>

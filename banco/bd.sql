@@ -2,7 +2,7 @@
 -- Servidor:                     127.0.0.1
 -- Versão do servidor:           10.4.32-MariaDB - mariadb.org binary distribution
 -- OS do Servidor:               Win64
--- HeidiSQL Versão:              12.7.0.6850
+-- HeidiSQL Versão:              12.8.0.6908
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -16,7 +16,7 @@
 
 
 -- Copiando estrutura do banco de dados para test
-CREATE DATABASE IF NOT EXISTS `test` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+CREATE DATABASE IF NOT EXISTS `test` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `test`;
 
 -- Copiando estrutura para tabela test.adm
@@ -25,9 +25,11 @@ CREATE TABLE IF NOT EXISTS `adm` (
   `user` varchar(50) DEFAULT NULL,
   `pass` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.adm: ~1 rows (aproximadamente)
+INSERT INTO `adm` (`id`, `user`, `pass`) VALUES
+	(7, 'guto', '$2y$10$0ZcqulUdao466u3M9.qeru1p5Sy7hbvTu0pBOHhiaD99LhKYLs6ry');
 
 -- Copiando estrutura para tabela test.avaliacoes
 CREATE TABLE IF NOT EXISTS `avaliacoes` (
@@ -40,18 +42,23 @@ CREATE TABLE IF NOT EXISTS `avaliacoes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.avaliacoes: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela test.carrinho
 CREATE TABLE IF NOT EXISTS `carrinho` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_cliente` int(11) DEFAULT NULL,
+  `id_vendedor` int(11) DEFAULT NULL,
   `id_produto` int(11) DEFAULT NULL,
-  `valor_carrinho` varchar(50) DEFAULT NULL,
+  `valor` varchar(50) DEFAULT NULL,
+  `id_pagamento` varchar(50) DEFAULT NULL,
+  `quantidade` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.carrinho: ~1 rows (aproximadamente)
+INSERT INTO `carrinho` (`id`, `id_cliente`, `id_vendedor`, `id_produto`, `valor`, `id_pagamento`, `quantidade`) VALUES
+	(3, 8, NULL, 69, '240', NULL, 4);
 
 -- Copiando estrutura para tabela test.cliente
 CREATE TABLE IF NOT EXISTS `cliente` (
@@ -61,9 +68,11 @@ CREATE TABLE IF NOT EXISTS `cliente` (
   `email` varchar(200) DEFAULT NULL,
   `senha` char(60) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.cliente: ~1 rows (aproximadamente)
+INSERT INTO `cliente` (`id`, `id_endereco`, `nome`, `email`, `senha`) VALUES
+	(8, NULL, 'AUGUSTO OLIVEIRA PAZ', 'augustooliveirapaz350@gmail.com', '$2y$10$SJrkU6S.SDZwiI2ubtqn8ejArPW2vTMP0ZiONHSIlJDin58flOvdm');
 
 -- Copiando estrutura para tabela test.endereco
 CREATE TABLE IF NOT EXISTS `endereco` (
@@ -78,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `endereco` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.endereco: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela test.entregas
 CREATE TABLE IF NOT EXISTS `entregas` (
@@ -92,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `entregas` (
   CONSTRAINT `entregas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.entregas: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela test.especificacao
 CREATE TABLE IF NOT EXISTS `especificacao` (
@@ -102,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `especificacao` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.especificacao: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela test.pedidos
 CREATE TABLE IF NOT EXISTS `pedidos` (
@@ -116,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.pedidos: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela test.produtos
 CREATE TABLE IF NOT EXISTS `produtos` (
@@ -125,10 +134,14 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   `descricao` varchar(1000) DEFAULT NULL,
   `valor` varchar(50) DEFAULT NULL,
   `fotos` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`fotos`)),
+  `status` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.produtos: ~2 rows (aproximadamente)
+INSERT INTO `produtos` (`id`, `nome`, `descricao`, `valor`, `fotos`, `status`) VALUES
+	(69, 'PEONY Para Flipper Zero Protetor', '', '60', NULL, 1),
+	(70, 'Pingente De Telefone PEONY Decoração De Caixa Anti-Perda', '', '50', NULL, 1);
 
 -- Copiando estrutura para tabela test.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
@@ -139,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.usuarios: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela test.vendedor
 CREATE TABLE IF NOT EXISTS `vendedor` (
@@ -150,9 +163,11 @@ CREATE TABLE IF NOT EXISTS `vendedor` (
   `senha` char(60) DEFAULT NULL,
   `status` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela test.vendedor: ~1 rows (aproximadamente)
+INSERT INTO `vendedor` (`id`, `id_endereco`, `nome`, `email`, `senha`, `status`) VALUES
+	(37, NULL, 'Augusto Paz', 'guto@paz', '$2y$10$DKEoHConMWCh9LNawP2sXuRD8mxpG9r.skTWDqLDxh5CNZbZMYAAG', 1);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

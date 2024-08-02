@@ -2,7 +2,6 @@
 require_once "./Session.php";
 require_once "../../config/Database.php";
 require_once "../../config/Crud.php";
-var_dump($_POST);
 function salveImg($id){
   // Diretório onde as imagens serão salvas
   $targetDir = "uploads/produtos/fts/$id/";
@@ -586,7 +585,7 @@ $res=$p->selectById($_POST['id'])->fetch_assoc();
                 
 
                 <form action="#" method="post" enctype="multipart/form-data">
-                  <input value="<?php echo $res['id']; ?>" name="idP" >
+                  <input value="<?php echo $res['id']; ?>" name="idP" hidden>
                 <div class="col-auto"><input value="1" name="post_editProduto" hidden>
                   <a class="btn btn-link text-secondary p-0 me-3 fw-medium" role="div" href="./produtos.php">Discartar</a>
                   <button class="btn btn-success" type="submit">Salvar </button>

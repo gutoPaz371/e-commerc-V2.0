@@ -36,23 +36,13 @@
     $res=$car->compare($idCliente,$idP);
 
     if($res!=null){//atualizar carrinho
-        echo "atualizar carrinho";
-        var_dump($res);
-        $car->id=$res['id'];
-        $car->quantidade=intval($res['quantidade'])+$qnt;
-        $car->valor=(intval(str_replace(",",".",$res['valor']))/$res['quantidade'])*$car->quantidade;
-        if($car->update())header('location: ./product-details.php?id='.$_GET['id'].'&token='.$_GET['token']);return false;
+        if($car->sum($res['id']))header('location: ./product-details.php?id='.$_GET['id'].'&token='.$_GET['token']);return false;
     }
-    
     else{
         $car->id_cliente=$idCliente;
         $car->id_produto=$idP;
-        $car->valor=$v;
         $car->quantidade=$qnt;
+        $car->valor=$v*$qnt;
         if($car->insert())header('location: ./product-details.php?id='.$_GET['id'].'&token='.$_GET['token']);return false;
-        
-
-    }
-       
-    
+    }    
 }else echo "Servidor Offline!";

@@ -1,5 +1,5 @@
 <?php
-require_once "./Session.php";
+// require_once "./Session.php";
 function findImage($id) {
   $extensions = ['jfif', 'jpg', 'jpeg', 'png', 'gif']; // Extensões permitidas
 

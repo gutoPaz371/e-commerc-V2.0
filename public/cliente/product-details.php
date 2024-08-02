@@ -1,5 +1,6 @@
 <?php
-require_once "./Session.php";
+session_start();
+// require_once "./Session.php";
 if(!isset($_GET['id']) || !isset($_GET['token'])){
   echo 'Pagina Nao encontrada!!!';exit();}
 //arrumar cessao para nao replicar errado no carrinho
@@ -232,7 +233,7 @@ if(isset($_GET['id']) && isset($_GET['token'])){
                 </div>
               </li>
               <li class="nav-item d-none d-sm-block">
-                <a class="nav-link px-0 notification-indicator notification-indicator-warning notification-indicator-fill fa-icon-wait" href="../app/e-commerce/shopping-cart.html"><span class="fas fa-shopping-cart" data-fa-transform="shrink-7" style="font-size: 33px;"></span><span class="notification-indicator-number">1</span></a>
+                <a class="nav-link px-0 notification-indicator notification-indicator-warning notification-indicator-fill fa-icon-wait" href="./shopping-cart.php"><span class="fas fa-shopping-cart" data-fa-transform="shrink-7" style="font-size: 33px;"></span><span class="notification-indicator-number">1</span></a>
 
               </li>
               <li class="nav-item dropdown">
@@ -507,7 +508,19 @@ if(isset($_GET['id']) && isset($_GET['token'])){
                         <a class="btn btn-sm btn-outline-secondary border border-300" data-field="input-quantity" data-type="plus">+</a>
                       </div>
                     </div>
-                      <div class="col-auto px-2 px-md-3"><button class="btn btn-sm btn-primary" type="submit"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Adicionar ao carrinho</span></button></div>
+                    <?php 
+                      if(isset($_SESSION['id'])){
+                        if($_SESSION['id']!=0){
+                          ?>
+                            <div class="col-auto px-2 px-md-3"><button class="btn btn-sm btn-primary" type="submit"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Adicionar ao carrinho</span></button></div>
+                          <?php
+                        }
+                      }else{
+                        ?>
+                          <div class="col-auto px-2 px-md-3"><a href="./login.php" class="btn btn-sm btn-primary" ><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Adicionar ao carrinho</span></a></div>                        
+                        <?php
+                      }
+                      ?>
                     </form>
                   </div>
                 </div>

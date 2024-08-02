@@ -285,6 +285,7 @@
         public function getCarsByIdClient($id){
             $sql="SELECT 
                 carrinho.id AS id,
+                carrinho.id_cliente AS idC,
                 carrinho.valor AS valor,
                 produtos.nome AS Pnome,
                 produtos.id AS idP,
@@ -299,7 +300,56 @@
             $stmt->bind_param("s",$id);
             if($stmt->execute())return $stmt->get_result();return false;
         }
+        private function valor_sum($id){
+            $sql="SELECT valor, quantidade as qnt FROM carrinho WHERE id=?";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param("i",$id);
+            if($stmt->execute()){
+                $res=$stmt->get_result()->fetch_assoc();
+                $valor=$res['valor'];
+                $qnt=$res['qnt'];
+                if($qnt==1){
+                    $valor=$valor*2;
+                    $qnt=$qnt+1;
+                    return array($valor,$qnt);
+                }else{
+                    $valor=$valor+($valor/$qnt);
+                    $qnt=$qnt+1;
+                    return array($valor,$qnt);
+                }
+            }return false;
+        }
+        private function valor_sub($id){
+            $sql="SELECT valor, quantidade as qnt FROM carrinho WHERE id=?";
+            $stmt=$this->conn->prepare($sql);
+            $stmt->bind_param("i",$id);
+            if($stmt->execute()){
+                $res=$stmt->get_result()->fetch_assoc();
+                $valor=$res['valor'];
+                $qnt=$res['qnt'];
+                $valor=$valor-($valor/$qnt);
+                $qnt=$qnt-1;
+                return array($valor,$qnt);          
+            }return false;
+        }
+        public function sum($id){     
+            $sql="UPDATE carrinho SET quantidade=?,valor=? WHERE id=?";
+            $stmt=$this->conn->prepare($sql);
+            $dado=$this->valor_sum($id);
+            $v=$dado[0];$q=$dado[1];
+            $stmt->bind_param("isi",$q,$v,$id);
+            if($stmt->execute())return true;return false;
 
+        }
+        public function sub($id){
+            $sql="UPDATE carrinho SET quantidade=?,valor=? WHERE id=?";
+            $stmt=$this->conn->prepare($sql);
+            $dado=$this->valor_sub($id);
+            $v=$dado[0];$q=$dado[1];
+            $stmt->bind_param("isi",$q,$v,$id);
+            if($stmt->execute())return true;return false;
+
+        }
     }
 
     class Avaliacoes{
