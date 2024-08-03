@@ -5,13 +5,13 @@ app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def process():
     data = request.get_json()
-    argumento = data.get('argumento')
-    resultado = f"Resultado: {argumento}"
-    link = gerar_link_pagamento()
-    return render_template("homepage.php", link_pagamento=link)
+    link=gerar_link_pagamento(data)
+    print(data)
+    return render_template("invoice.html",data=data, link_pagamento=link)
+@app.route('/success')
+def success():
+    return render_template("success.html")
 
-    # return gerar_link_pagamento()
-    # return jsonify({"resultado": resultado})
 if __name__ == "__main__":
     app.run(port=5000)
     

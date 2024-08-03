@@ -1,21 +1,3 @@
-<?php
-  require_once "../../config/Database.php";
-  require_once "../../config/Crud.php";
-  if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $data = new Database();
-    $db = $data->getConnection();
-    $adm = new Adm($db);
-    $adm->user=$_POST['user'];$adm->pass=$_POST['pass'];
-    if($id=$adm->fazerLogin()){
-      session_start();
-      $_SESSION['idAdm']=$id;
-      header('location: ./vendedores.php');
-    }else{
-      header("locatio: ./login.php");
-    }
-
-  }
-?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en-US" dir="ltr">
 
@@ -88,33 +70,56 @@
             container.classList.add('container-fluid');
           }
         </script>
-        <div class="row flex-center min-vh-100 py-6">
+        <div class="row flex-center min-vh-100 py-6 text-center">
           <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4"><a class="d-flex flex-center mb-4" href="../index.html"><img class="me-2" src="../assets/img/icons/spot-illustrations/falcon.png" alt="" width="58" /><span class="font-sans-serif text-primary fw-bolder fs-4 d-inline-block">falcon</span></a>
             <div class="card">
               <div class="card-body p-4 p-sm-5">
-                <div class="row flex-between-center mb-2">
-                  <div class="col-auto">
-                    <h5>Area Admin</h5>
-                  </div>
-                </div>
-                <form action="#" method="post">
-                  <div class="mb-3">
-                    <input name="user" class="form-control" type="text" placeholder="User" required/>
-                  </div>
-                  <div class="mb-3">
-                    <input name="pass" class="form-control" type="password" placeholder="Password" required/>
-                  </div>
-                  <div class="row flex-between-center">
-                    <div class="col-auto">
-                      
+                <h5 class="mb-0">Forgot your password?</h5><small>Enter your email and we'll send you a reset link.</small>
+                <form class="row g-3">
+                    <div class="col-md-6">
+                      <label for="inputEmail4" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="inputEmail4">
                     </div>
-                  </div>
-                  <div class="mb-3">
-                    <button class="btn btn-primary d-block w-100 mt-3" type="submit" name="submit">Log in</button>
-                  </div>
-                </form>
-                
-                
+                    <div class="col-md-6">
+                      <label for="inputPassword4" class="form-label">Password</label>
+                      <input type="password" class="form-control" id="inputPassword4">
+                    </div>
+                    <div class="col-12">
+                      <label for="inputAddress" class="form-label">Address</label>
+                      <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                    </div>
+                    <div class="col-12">
+                      <label for="inputAddress2" class="form-label">Address 2</label>
+                      <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="inputCity" class="form-label">City</label>
+                      <input type="text" class="form-control" id="inputCity">
+                    </div>
+                    <div class="col-md-4">
+                      <label for="inputState" class="form-label">State</label>
+                      <select id="inputState" class="form-select">
+                        <option selected>Choose...</option>
+                        <option>...</option>
+                      </select>
+                    </div>
+                    <div class="col-md-2">
+                      <label for="inputZip" class="form-label">Zip</label>
+                      <input type="text" class="form-control" id="inputZip">
+                    </div>
+                    <div class="col-12">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="gridCheck">
+                        <label class="form-check-label" for="gridCheck">
+                          Check me out
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-primary">Sign in</button>
+                    </div>
+                  </form>
+                <a class="fs-10 text-600" href="#!">I can't recover my account using this page<span class="d-inline-block ms-1">&rarr;</span></a>
               </div>
             </div>
           </div>
